@@ -1,0 +1,31 @@
+:root{--theme-bg:#0c121c;--theme-surface:#111b29;--theme-raised:#172332;--theme-sidebar:#080e18;--theme-text:#edf3e8;--theme-muted:#97aa96;--theme-accent:#d5f69b;--theme-soft:color-mix(in srgb,var(--lime) 9%,transparent);--theme-border:color-mix(in srgb,var(--lime) 24%,transparent)}
+body,.cinema-shell,.cinema-shell main,.cinema-home{background-color:var(--theme-bg);color:var(--theme-text)}
+.cinema-shell .sidebar,.cinema-shell .sidebar:is(:hover,:has(:focus-visible)),.cinema-shell[data-pinned-sidebar=true] .sidebar{background:var(--theme-sidebar)}
+.cinema-shell .sidebar .nav-item.active{background:var(--theme-soft);color:var(--lime)}
+.cinema-shell .sidebar .nav-item.active svg,.cinema-shell .sidebar .nav-item.active span,.cinema-shell .brand-mark,.footer-star{color:var(--lime)}
+.cinema-shell:not(.cinema-home-page) .topbar{background:var(--theme-bg)}
+.cinema-shell .search-field,.cinema-shell .service-section,.cinema-shell .addon-item,.cinema-shell .addon-banner,.cinema-shell .settings-quick-links>button,.cinema-shell .settings-group-body,.cinema-shell .settings-services .service-section,.integration-card,.backup-preview,.collection-form{background:var(--theme-surface);border-color:color-mix(in srgb,var(--lime) 12%,transparent)}
+.settings-layout{background:radial-gradient(ellipse at 95% 0%,var(--theme-soft),transparent 65%),var(--theme-bg)}
+.settings-nav{background:var(--theme-sidebar)}
+.settings-nav nav>button[aria-current=page],.settings-nav nav>button:hover,.cinema-shell .genre-tabs button.selected,.player-options .chosen,.track-choices button.chosen{background:var(--theme-soft);border-color:var(--theme-border);color:var(--lime)}
+.primary,.play-toggle,.progress>span,.connection-dot,.demo-pill>span{background:var(--lime);color:var(--theme-sidebar)}
+.secondary,.cinema-save,.track-button,.track-choices>button,.source-row,.stream-button,.clean-source,.connected-service,.resolved-source,.account-status,.message,.settings-look,.settings-quick-links>button:hover{background-color:var(--theme-raised);border-color:var(--theme-border);color:var(--theme-text)}
+.secondary:hover,.track-button.selected{background:var(--theme-soft);border-color:var(--lime);color:var(--lime)}
+.source-quality,.settings-status,.catalog-badge,.badge,.quality,.capability-tags span,.genre-tabs button.selected,.is-favorite{color:var(--lime);border-color:var(--theme-border)}
+.modal,.embedded-player,.embedded-header,.embedded-controls{background:var(--theme-surface);color:var(--theme-text);border-color:var(--theme-border)}
+.modal>header{background:var(--theme-sidebar)}
+.modal::backdrop{background:color-mix(in srgb,var(--theme-sidebar) 80%,transparent)}
+.detail-art{box-shadow:inset 0 -35px 35px -25px var(--theme-surface)}
+.embedded-video{background:#000}.embedded-track-panel{border-color:var(--theme-border)}
+.embedded-credit,.embedded-seek,.track-button small,.track-choices small,.muted,.cinema-shell .muted,.cinema-shell .page-description,.cinema-shell .card-caption p,.setting-row small,.settings-note,.settings-group>p,.settings-detail>header>p:last-child,.settings-nav nav>button,.settings-footnote,.integration-card small,.integration-card p,.settings-detail p,.detail-body>p,.detail-meta{color:var(--theme-muted)}
+.cinema-shell input:not([type=radio]):not([type=range]):not([type=checkbox]),.cinema-shell select,.handoff-link{background-color:var(--theme-bg);border-color:var(--theme-border);color:var(--theme-text)}
+.cinema-shell input[type=radio],.cinema-shell input[type=range],.cinema-shell input[type=checkbox]{accent-color:var(--lime)}
+.cinema-shell input:focus-visible,.cinema-shell select:focus-visible,.cinema-shell textarea:focus-visible,.cinema-shell button:focus-visible{outline:2px solid var(--lime);outline-offset:3px}
+.cinema-shell .search-field:focus-within{border-color:var(--lime)}
+.cinema-shell .setting-row input[type=checkbox]:checked{background:var(--lime)}
+.settings-look{background:linear-gradient(120deg,var(--theme-soft),transparent),var(--theme-surface);border-color:var(--theme-border)}
+.settings-look .eyebrow,.settings-detail>header .eyebrow,.eyebrow,.account-symbol,.addon-icon,.hero-info,.icon-button:hover{color:var(--lime)}
+.cinema-shell .content-page h1,.settings-detail>header h2,.settings-nav h1,.setting-row strong,.settings-group strong,.integration-card strong,.settings-look h3,.detail-art h2{color:var(--theme-text)}
+.cinema-welcome{background:radial-gradient(ellipse at 70% 20%,var(--theme-raised),transparent 65%),var(--theme-bg)}
+
+.cinema-shell .nav-item,.icon-button,.text-button,.card-tag,.detail-art>span,.detail-body>.detail-meta,footer,.language-grid label,.settings-local,.settings-local small{color:var(--theme-muted)}.avatar,.toast{background:var(--theme-raised);border-color:var(--theme-border);color:var(--lime)}.embedded-header .eyebrow{color:var(--lime)}input::placeholder,textarea::placeholder{color:var(--theme-muted);opacity:.65}::selection{background:var(--theme-border)}

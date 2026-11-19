@@ -1,0 +1,13 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "Aster Content Hub",
+  "version": "0.1.0-alpha.1",
+  "identifier": "com.aster.contenthub",
+  "build": { "beforeDevCommand": "npm run dev", "devUrl": "http://127.0.0.1:1420", "beforeBuildCommand": "npm run build", "frontendDist": "../dist" },
+  "app": {
+    "windows": [{ "label": "main", "title": "Aster Content Hub", "width": 1440, "height": 960, "minWidth": 900, "minHeight": 640, "backgroundColor": "#101110" }],
+    "security": { "csp": "default-src 'self'; img-src 'self' https: http: data:; media-src 'self' https: http: blob:; connect-src 'self' ipc: http://ipc.localhost https: http:; style-src 'self' 'unsafe-inline'; script-src 'self'; object-src 'none'; base-uri 'self'; frame-src 'none'" }
+  },
+  "bundle": { "active": true, "targets": ["nsis"], "icon": ["icons/icon.ico"] }
+}
+

@@ -1,0 +1,1 @@
+{"identifier":"main-capability","description":"Core permissions for the local Aster window","windows":["main"],"permissions":["core:default"]}

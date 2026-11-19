@@ -1,0 +1,17 @@
+import { useEffect, useState } from 'react';
+import { LoaderCircle, Play, Settings2 } from 'lucide-react';
+import type { InstalledAddon, LocalState, Media } from '../shared/models';
+import { episodeMedia, loadEpisodes, nextEpisode, type Episode } from './episodes';
+import { rememberSeason, seriesPosition } from './series-progress';
+import type { AppSettings } from './settings';
+export default function EpisodePicker({media,addons,items,settings,play,choose}:{media:Media;addons:InstalledAddon[];items:LocalState['items'];settings:AppSettings;play:(media:Media)=>void;choose:(media:Media)=>void}){
+  const [episodes,setEpisodes]=useState<Episode[]>([]),[season,setSeason]=useState(1),[busy,setBusy]=useState(true),[error,setError]=useState(''),[attempt,setAttempt]=useState(0);
+  const latest=Object.values(items).filter(item=>item.media.episode?.seriesId===media.id&&item.progress).sort((a,b)=>b.updatedAt.localeCompare(a.updatedAt))[0];
+  const remembered=seriesPosition(media.id);
+  const last=episodes.find(e=>e.id===(remembered?.episodeId||latest?.media.id));
+  const progress=last?items[last.id]?.progress:undefined;
+  const resume=last&&progress&&progress.position/progress.duration>=settings.watchedThreshold/100?nextEpisode(episodes,episodeMedia(media,last)):last;
+  useEffect(()=>{let cancelled=false;setBusy(true);setError('');setEpisodes([]);void loadEpisodes(addons,media).then(items=>{if(!cancelled){setEpisodes(items);const savedSeason=seriesPosition(media.id)?.selectedSeason??latest?.media.episode?.season;setSeason(savedSeason!==undefined&&items.some(e=>e.season===savedSeason)?savedSeason:items.find(e=>e.season>0)?.season??items[0]?.season??1);}}).catch(e=>{if(!cancelled)setError(e.message);}).finally(()=>{if(!cancelled)setBusy(false);});return()=>{cancelled=true;};},[media.id,addons,attempt]);
+  return <section className="episode-picker" aria-label="Seasons and episodes"><h3>Seasons & episodes</h3>{busy?<p role="status"><LoaderCircle size={16} className="spin"/> Loading episodes…</p>:error?<div role="alert"><p>{error}</p><button className="secondary" onClick={()=>setAttempt(n=>n+1)}>Retry episodes</button></div>:!episodes.length?<p>This metadata addon has not supplied an episode list for this show.</p>:<>{resume&&<button className="primary continue-episode" onClick={()=>play(episodeMedia(media,resume))}><Play size={16}/>Continue S{resume.season} E{resume.number} · {resume.title}</button>}<label>Season<select aria-label="Season" value={season} onChange={e=>{const value=Number(e.target.value);setSeason(value);rememberSeason(media.id,value);}}>{[...new Set(episodes.map(e=>e.season))].map(s=><option key={s} value={s}>{s===0?'Specials':`Season ${s}`}</option>)}</select></label><div className="episode-list">{episodes.filter(e=>e.season===season).map(e=><article className="episode-row" key={e.id}><div><h4>{e.number}. {e.title}</h4>{e.overview&&<p>{e.overview}</p>}{items[e.id]?.progress&&<small>{Math.min(100,Math.round(items[e.id].progress!.position/items[e.id].progress!.duration*100))}% watched</small>}</div><div className="episode-actions"><button className="primary" aria-label={`Play episode ${e.number}: ${e.title}`} onClick={()=>play(episodeMedia(media,e))}><Play size={16}/>Play</button><button className="secondary" aria-label={`Choose source for episode ${e.number}: ${e.title}`} onClick={()=>choose(episodeMedia(media,e))}><Settings2 size={16}/>Choose source</button></div></article>)}</div></>}</section>;
+}
+
