@@ -15,3 +15,5 @@ Source access: download **mpv-0.42.0-corresponding-source.zip** beside the Aster
 Upstream build provenance: https://github.com/mpv-player/mpv/actions/runs/41936479105/job/126946096696
 
 Build script: `ci/build-win32.ps1` in the mpv source archive. Aster's `scripts/Prepare-Player.ps1` verifies the original binary download and copies these notices alongside the runtime. The portable Aster package must retain its entire `player` directory.
+
+Microsoft Visual C++ runtime DLLs in this directory are unmodified redistributable code from Visual Studio C++ Build Tools, copyright Microsoft Corporation. They are deployed locally alongside mpv so no separate runtime installation is needed. They retain Microsoft's license terms; they are not licensed under the mpv GPL. Redistribution reference: https://learn.microsoft.com/visualstudio/releases/2022/redistribution and https://visualstudio.microsoft.com/license-terms/ .
