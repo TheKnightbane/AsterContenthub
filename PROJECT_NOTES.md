@@ -4,3 +4,5 @@
 - **Yellow border — investigate later at the owner’s request.** It remained visible after Aster closed, including after the preview JavaScript session was reset. No Windows capture/privacy settings were changed. Avoid native screen-capture previews while investigating.
 
 - **Next planned session: iOS app (November 20, 2026).** Reuse Aster's shared data models, addon integration patterns and Supabase profile/library/watch-progress backend. Begin with the iPhone interface and playback approach; device builds will require macOS with Xcode. Apple TV remains a future client.
+
+- **Reminder for the next session: fullscreen catalog layout.** Home movie/series rows are clipped on the right on the large fullscreen/maximized layout, leaving a wide unused dark area to the right. Investigate viewport width, row/container max-width and horizontal overflow using the owner's November 19 screenshot. This is catalog card layout, not video playback cropping.
