@@ -97,6 +97,31 @@ test('fullscreen fills the video surface, reveals controls on movement, and Esca
   await expect(player).toHaveCount(0);
 });
 
+test('fullscreen reveals usable seek and volume controls and resizes the native surface away from them', async ({ page }) => {
+  await page.goto('/'); await playFixture(page);
+  await page.getByRole('button', { name: 'Fullscreen', exact: true }).click();
+  await page.waitForTimeout(550);
+  await page.evaluate(() => (window as any).mpvInput('activity'));
+  const seek = page.getByRole('slider', { name: 'Seek video' });
+  await seek.focus(); await page.keyboard.press('ArrowRight');
+  const volume = page.getByRole('slider', { name: 'Video volume' });
+  await volume.focus(); await page.keyboard.press('ArrowLeft');
+  await expect.poll(async () => page.evaluate(() => (window as any).mpvCalls.filter((c: any) => c.command === 'mpv_control').map((c: any) => c.args.action))).toContain('volume');
+  const calls = await page.evaluate(() => (window as any).mpvCalls);
+  expect(calls.some((c: any) => c.command === 'mpv_control' && c.args.action === 'seek' && c.args.value > 17)).toBe(true);
+  const resized = calls.filter((c: any) => c.command === 'mpv_resize').at(-1).args;
+  const controls = await page.locator('.embedded-controls').boundingBox();
+  expect(resized.y + resized.height).toBeLessThanOrEqual(controls!.y + 1);
+  await page.locator('.embedded-controls').hover();
+  await page.waitForTimeout(3500);
+  await expect(page.getByRole('dialog', { name: 'Playing Sintel' })).toHaveClass(/chrome-hidden/);
+  await page.mouse.move(800, 650);
+  await expect(volume).toBeVisible();
+  await page.locator('.embedded-header h2').click();
+  await page.keyboard.press('ArrowRight'); await page.keyboard.press('ArrowDown');
+  expect(await page.evaluate(() => (window as any).mpvCalls.some((c: any) => c.command === 'mpv_control' && c.args.action === 'seek' && c.args.value === 27))).toBe(true);
+});
+
 
 test('changes mpv source inside fullscreen and resumes the replacement at the current position', async ({page})=>{
   await page.goto('/');await playFixture(page);

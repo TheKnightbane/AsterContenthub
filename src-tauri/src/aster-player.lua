@@ -35,13 +35,18 @@ local function input(action)
     io.stdout:write('ASTER_INPUT ' .. utils.format_json({action=action}) .. '\n')
     io.stdout:flush()
 end
-local last_activity = 0
-mp.observe_property('mouse-pos', 'native', function(_, value)
-    if value and value.hover and mp.get_time() - last_activity > 0.15 then
-        last_activity = mp.get_time()
-        input('activity')
-    end
-end)
+-- Physical pointer activity comes from the native host. Resizing the video
+-- changes mouse-pos without a real movement and must not reveal idle controls.
 mp.add_key_binding('f', 'aster-fullscreen', function() input('fullscreen') end)
 mp.add_key_binding('ESC', 'aster-escape', function() input('escape') end)
 mp.add_key_binding('SPACE', 'aster-pause', function() mp.commandv('cycle', 'pause') end)
+mp.add_key_binding('LEFT', 'aster-seek-back', function() mp.commandv('seek', -10, 'relative'); input('activity') end, {repeatable=true})
+mp.add_key_binding('RIGHT', 'aster-seek-forward', function() mp.commandv('seek', 10, 'relative'); input('activity') end, {repeatable=true})
+local function volume(delta)
+    mp.set_property_number('volume', math.max(0, math.min(100, mp.get_property_number('volume', 100) + delta)))
+    input('activity')
+end
+mp.add_key_binding('UP', 'aster-volume-up', function() volume(5) end, {repeatable=true})
+mp.add_key_binding('DOWN', 'aster-volume-down', function() volume(-5) end, {repeatable=true})
+mp.add_key_binding('m', 'aster-mute', function() mp.commandv('cycle', 'mute'); input('activity') end)
+mp.add_key_binding('TAB', 'aster-controls', function() input('activity') end)

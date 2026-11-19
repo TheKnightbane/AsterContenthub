@@ -16,8 +16,11 @@ struct ManagedPlayer { session_id: String, child: Child, host: usize, pipe: Stri
 #[derive(Default)]
 pub struct PlayerState(Arc<Mutex<Option<ManagedPlayer>>>);
 
-fn find_mpv() -> Option<PathBuf> {
+fn find_mpv(resources: Option<&Path>) -> Option<PathBuf> {
     let mut candidates = Vec::new();
+    if let Some(root) = resources { candidates.push(root.join("player/mpv.exe")); }
+    #[cfg(any(debug_assertions, test))]
+    candidates.push(Path::new(env!("CARGO_MANIFEST_DIR")).join("resources/player/mpv.exe"));
     for key in ["ProgramFiles", "ProgramFiles(x86)"] {
         if let Some(root) = std::env::var_os(key) {
             let root = PathBuf::from(root);
@@ -61,12 +64,12 @@ fn launch_args(source: &str, title: &str, position: f64, audio: &str, subtitle: 
 }
 
 #[tauri::command]
-pub fn mpv_available() -> bool { find_mpv().is_some() }
+pub fn mpv_available(app: tauri::AppHandle) -> bool { find_mpv(app.path().resource_dir().ok().as_deref()).is_some() }
 
 #[tauri::command]
 pub async fn mpv_play(app: tauri::AppHandle, state: tauri::State<'_, PlayerState>, source: String, demo: bool, title: String, position: f64, audio_language: String, subtitle_language: String, subtitle_mode: String, options: Option<PlaybackOptions>, session_id: String, x: f64, y: f64, width: f64, height: f64) -> Result<(), String> {
     if session_id.len() > 80 || session_id.is_empty() || !session_id.bytes().all(|b| b.is_ascii_alphanumeric() || b == b'-') { return Err("Invalid playback session.".into()); }
-    let exe = find_mpv().ok_or("mpv was not found. Install it with winget install --id shinchiro.mpv --exact, then restart Aster.")?;
+    let exe = find_mpv(app.path().resource_dir().ok().as_deref()).ok_or("The bundled player is missing. Reinstall Aster to restore it, or select the built-in player in Settings.")?;
     let cache = app.path().app_cache_dir().map_err(|_| "Could not locate Aster's player cache.")?;
     std::fs::create_dir_all(&cache).map_err(|_| "Could not create the player cache.")?;
     let script = cache.join("aster-player.lua");
@@ -95,6 +98,11 @@ pub async fn mpv_play(app: tauri::AppHandle, state: tauri::State<'_, PlayerState
     let stdout = child.stdout.take().ok_or("Player output could not be connected.")?;
     *active = Some(ManagedPlayer { session_id: session_id.clone(), child, host, pipe, stopping: false });
     let shared = Arc::clone(&state.0);
+    crate::surface::monitor_pointer(app.clone(), Arc::new({
+        let active = Arc::clone(&shared);
+        let id = session_id.clone();
+        move || active.lock().ok().is_some_and(|p| p.as_ref().is_some_and(|p| p.session_id == id && !p.stopping))
+    }), session_id.clone());
     std::thread::spawn(move || {
         let mut completed = false;
         for line in BufReader::new(stdout).lines().map_while(Result::ok) {
@@ -249,9 +257,11 @@ mod tests {
         assert!(launch_args(source, "Movie", 0.0, "--bad", "en", "auto", Path::new("x")).is_err());
     }
     #[test]
-    #[ignore = "Requires mpv installed on this Windows machine"]
+    #[ignore = "Requires the prepared Windows player bundle"]
     fn installed_mpv_decodes_demo_and_reports_progress() {
-        let exe = find_mpv().expect("mpv installed");
+        let bundled = Path::new(env!("CARGO_MANIFEST_DIR")).join("resources");
+        let exe = find_mpv(Some(&bundled)).expect("bundled mpv prepared");
+        assert_eq!(exe, bundled.join("player/mpv.exe"), "test must use bundled mpv, not a system installation");
         let project = Path::new(env!("CARGO_MANIFEST_DIR")).parent().unwrap();
         let source = project.join("public/media/sintel-trailer.mp4");
         let script = Path::new(env!("CARGO_MANIFEST_DIR")).join("src/aster-player.lua");
@@ -263,9 +273,11 @@ mod tests {
         assert!(String::from_utf8_lossy(&output.stdout).contains("ASTER_COMPLETE"), "natural completion was not reported");
     }
     #[test]
-    #[ignore = "Requires mpv installed on this Windows machine"]
+    #[ignore = "Requires the prepared Windows player bundle"]
     fn installed_mpv_accepts_live_track_and_transport_controls() {
-        let exe = find_mpv().expect("mpv installed");
+        let bundled = Path::new(env!("CARGO_MANIFEST_DIR")).join("resources");
+        let exe = find_mpv(Some(&bundled)).expect("bundled mpv prepared");
+        assert_eq!(exe, bundled.join("player/mpv.exe"), "test must use bundled mpv, not a system installation");
         let project = Path::new(env!("CARGO_MANIFEST_DIR")).parent().unwrap();
         let source = project.join("public/media/sintel-trailer.mp4");
         let script = Path::new(env!("CARGO_MANIFEST_DIR")).join("src/aster-player.lua");
@@ -276,6 +288,9 @@ mod tests {
         std::thread::sleep(std::time::Duration::from_millis(600));
         let result = tauri::async_runtime::block_on(async {
             for (action, value) in [("volume", json!(25)), ("audio", json!(1)), ("subtitles", json!("no")), ("seek", json!(2)), ("pause", Value::Null)] { send_command(&pipe, control_command(action, &value)?, true).await?; }
+            send_command(&pipe, json!(["keypress", "RIGHT"]), true).await?;
+            send_command(&pipe, json!(["keypress", "DOWN"]), true).await?;
+            send_command(&pipe, json!(["keypress", "m"]), true).await?;
             send_command(&pipe, json!(["keypress", "f"]), true).await?;
             tokio::time::sleep(std::time::Duration::from_millis(100)).await;
             send_command(&pipe, json!(["quit"]), false).await
@@ -286,6 +301,7 @@ mod tests {
         assert!(output.status.success());
         assert!(String::from_utf8_lossy(&output.stdout).contains("ASTER_STATE"));
         assert!(String::from_utf8_lossy(&output.stdout).contains("ASTER_INPUT"));
+        assert!(String::from_utf8_lossy(&output.stdout).contains("\"volume\":20"), "native volume shortcut did not apply");
         assert!(!String::from_utf8_lossy(&output.stdout).contains("ASTER_COMPLETE"), "manual quit must not trigger autoplay");
     }
 }

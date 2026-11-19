@@ -1,22 +1,18 @@
 # Aster Content Hub — Windows alpha
 
-A desktop content hub built with Tauri, React, TypeScript and Vite. **0.1.0-alpha.1** is an early testing release.
+A desktop content hub built with Tauri, React, TypeScript and Vite. **0.1.0-alpha.2** is an early testing release.
 
-[Download the Windows alpha](https://github.com/TheKnightbane/AsterContenthub/releases/tag/v0.1.0-alpha.1) · [Report an issue](https://github.com/TheKnightbane/AsterContenthub/issues)
+[Download the Windows alpha](https://github.com/TheKnightbane/AsterContenthub/releases/tag/v0.1.0-alpha.2) · [Report an issue](https://github.com/TheKnightbane/AsterContenthub/issues)
 
 ## Install and preview
 
-Download **AsterContentHub-Setup-0.1.0-alpha.1-x64.exe** from the release page, or use **AsterContentHub-0.1.0-alpha.1-x64.exe** directly. Windows x64 and Microsoft WebView2 are required. The installer can install WebView2 when needed. This is an unsigned development build; Windows may display an unknown-publisher warning.
+Download **AsterContentHub-Setup-0.1.0-alpha.2-x64.exe** from the release page, or download **AsterContentHub-Portable-0.1.0-alpha.2-x64.zip** and extract the entire folder. Windows x64 and Microsoft WebView2 are required. The installer can install WebView2 when needed. This is an unsigned development build; Windows may display an unknown-publisher warning.
 
 No account, email, API key or Supabase credentials are required to open the app. Your existing Aster library and device credentials are preserved. Updates are installed manually from Releases; automatic updating is not included.
 
-Install mpv for broad codec support and playback inside Aster:
+mpv 0.42.0 is included and selected automatically on first use. No separate player installation is needed. The built-in video player remains available in Settings. Move the complete extracted folder when using the portable download.
 
-```powershell
-winget install --id shinchiro.mpv --exact
-```
-
-Aster detects mpv and selects it on first use. The built-in video player also works, with codec support determined by WebView2. mpv is an external dependency and is not bundled in this release.
+In fullscreen, move the mouse to reveal the timeline and volume controls. Left/Right seek 10 seconds, Up/Down adjust volume, M mutes, F toggles fullscreen and Esc exits fullscreen.
 
 ## Start watching
 
@@ -103,3 +99,7 @@ See `VERIFICATION.md` for completed checks. When reporting a bug, include the ap
 Sintel © Blender Foundation, [sintel.org](https://www.sintel.org/), [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/). The unmodified trailer from [W3C’s media sample](https://media.w3.org/2010/05/sintel/trailer.mp4) is included only as a playback test asset.
 
 Illustrative photographs: Unsplash, under the [Unsplash license](https://unsplash.com/license); exact URLs are in `ASSETS.md`. UI icons: Lucide (ISC). Aster logo: original SVG. Aster is not affiliated with Stremio, Blender, the listed service providers or Infuse.
+
+## Bundled player
+
+The Windows package includes the unmodified official mpv 0.42.0 x64 player and Vulkan runtime. Build preparation downloads a pinned, SHA-256-verified archive. Player notices and source information are in `third-party/mpv` and installed under `player`. mpv runs as a separate child process controlled through its IPC interface.

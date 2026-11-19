@@ -1,4 +1,4 @@
-# Alpha verification — 0.1.0-alpha.1
+# Alpha verification — 0.1.0-alpha.2
 
 Verified on Windows, November 19, 2026.
 
@@ -21,3 +21,9 @@ The earlier SMTP experiment is not used for profiles. Resend accepted delivery t
 ## Packaged Windows alpha
 
 The final 0.1.0-alpha.1 release build and NSIS x64 installer completed successfully. The packaged executable launched as a responsive Aster Content Hub window. Download artifacts have SHA-256 checksums in the release. Native installed-mpv tests, the full browser suite and live two-device pairing checks passed before packaging.
+
+## Alpha 2 — bundled player and fullscreen controls
+
+The official mpv 0.42.0 x64 Clang archive is pinned by SHA-256 and packaged with its Vulkan runtime, license notices and corresponding-source download. Player discovery prefers Aster's resource directory; native tests assert that the bundled executable is used even when a system mpv is installed. All 31 core tests, 7 embedded-player browser tests and 16 native tests passed, including bundled decoding, IPC and arrow-key volume control. A new fullscreen regression checks seeking, volume, idle auto-hide even over the bottom bar, and native surface bounds. The packaged app was launched and its running mpv path was confirmed under the package's player directory; fullscreen controls were visually observed. Mouse movement over the native video surface now reaches Aster through a native cursor observer, with keyboard seeking/volume/mute bindings available in both native video and web controls.
+
+Fullscreen chrome hides after the configured inactivity timeout, including when the pointer rests over a control. Active slider drags and open source/track panels keep controls available. Native cursor observations use screen coordinates, and Lua no longer treats layout-induced mouse-pos changes as physical activity.

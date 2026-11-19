@@ -1,0 +1,638 @@
+[
+  {
+    "name": "zlib-source",
+    "url": "https://github.com/madler/zlib/archive/refs/tags/v1.3.2.tar.gz",
+    "file": "zlib-source.tar.xz",
+    "sha256": "b99a0b86c0ba9360ec7e78c4f1e43b1cbdf1e6936c8fa0f6835c0cd694a495a1"
+  },
+  {
+    "name": "zlib-patch",
+    "url": "https://wrapdb.mesonbuild.com/v2/zlib_1.3.2-1/get_patch",
+    "file": "zlib-patch.patch.zip",
+    "sha256": "5ae7a2e92f823df118cfb8c1b23d94e3117864392b3446581d669049b2fba6dd"
+  },
+  {
+    "name": "liblzma-source",
+    "url": "https://tukaani.org/xz/xz-5.2.12.tar.xz",
+    "file": "liblzma-source.tar.xz",
+    "sha256": "f79a92b84101d19d76be833aecc93e68e56065b61ec737610964cd4f6c54ff2e"
+  },
+  {
+    "name": "liblzma-patch",
+    "url": "https://wrapdb.mesonbuild.com/v2/liblzma_5.2.12-3/get_patch",
+    "file": "liblzma-patch.patch.zip",
+    "sha256": "bf9eb44c6ba8d5157d5fdcc35a3d5a7a9d409a6c4ae696122bbb9e2d9d12467a"
+  },
+  {
+    "name": "proxy-libintl-source",
+    "url": "https://github.com/frida/proxy-libintl/archive/refs/tags/0.5.tar.gz",
+    "file": "proxy-libintl-source.tar.gz",
+    "sha256": "f7a1cbd7579baaf575c66f9d99fb6295e9b0684a28b095967cfda17857595303"
+  },
+  {
+    "name": "bzip2-source",
+    "url": "https://sourceware.org/pub/bzip2/bzip2-1.0.8.tar.gz",
+    "file": "bzip2-source.tar.gz",
+    "sha256": "ab5a03176ee106d3f0fa90e381da478ddae405918153cca248e682cd0c4a2269"
+  },
+  {
+    "name": "bzip2-patch",
+    "url": "https://wrapdb.mesonbuild.com/v2/bzip2_1.0.8-2/get_patch",
+    "file": "bzip2-patch.patch.zip",
+    "sha256": "60dbfc47880a78d9c8946f0dc689a771ddf503f6da904dabef1332904dcef561"
+  },
+  {
+    "name": "ff-nvcodec-headers-source",
+    "url": "https://github.com/FFmpeg/nv-codec-headers/releases/download/n11.1.5.1/nv-codec-headers-11.1.5.1.tar.gz",
+    "file": "ff-nvcodec-headers-source.tar.gz",
+    "sha256": "a28cdde3ac0e9e02c2dde7a1b4de5333b4ac6148a8332ca712da243a3361a0d9"
+  },
+  {
+    "name": "ff-nvcodec-headers-patch",
+    "url": "https://wrapdb.mesonbuild.com/v2/ff-nvcodec-headers_11.1.5.1-0/get_patch",
+    "file": "ff-nvcodec-headers-patch.patch.zip",
+    "sha256": "5ecf67ad26f1e4a3f2a8e10b22b37130dea8c867058ba79271441fdfd4f524a6"
+  },
+  {
+    "name": "lcms2-source",
+    "url": "https://github.com/mm2/Little-CMS/releases/download/lcms2.20/lcms2-2.20.tar.gz",
+    "file": "lcms2-source.tar.gz",
+    "sha256": "18ff5504fa9cc8a2b1f3591180d90ead16c8a2ea78e530523b46eab70e1ca6b9"
+  },
+  {
+    "name": "xxhash-source",
+    "url": "https://github.com/Cyan4973/xxHash/archive/v0.8.3.tar.gz",
+    "file": "xxhash-source.tar.gz",
+    "sha256": "aae608dfe8213dfd05d909a57718ef82f30722c392344583d3f39050c7f29a80"
+  },
+  {
+    "name": "xxhash-patch",
+    "url": "https://wrapdb.mesonbuild.com/v2/xxhash_0.8.3-2/get_patch",
+    "file": "xxhash-patch.patch.zip",
+    "sha256": "c7f78fc2d08ec21ff1bae928d7bdcddb42713a07d9d973a885c59ea7f8cf6bc8"
+  },
+  {
+    "name": "win-iconv-source",
+    "url": "https://github.com/win-iconv/win-iconv/archive/refs/tags/v0.0.9.tar.gz",
+    "file": "win-iconv-source.tar.gz",
+    "sha256": "f97e11b44576830bcb7363146f65dfe748f55f800da0ac876350ffb3f765d5de"
+  },
+  {
+    "name": "win-iconv-patch",
+    "url": "https://wrapdb.mesonbuild.com/v2/win-iconv_0.0.9-1/get_patch",
+    "file": "win-iconv-patch.patch.zip",
+    "sha256": "b732c2afe5c9bca0543093478ed6f21249f950f200667dc8dfae1ffb1f845694"
+  },
+  {
+    "name": "freetype2-source",
+    "url": "https://download.savannah.gnu.org/releases/freetype/freetype-2.15.0.tar.xz",
+    "file": "freetype2-source.tar.xz",
+    "sha256": "93cd47eb719c325107f2d3cf087d06299e944c3b48a40b55537302304dea1dd5"
+  },
+  {
+    "name": "libpng-source",
+    "url": "https://github.com/pnggroup/libpng/archive/v1.6.59.tar.gz",
+    "file": "libpng-source.tar.gz",
+    "sha256": "2540302a1844ad2b2b501977abecfa850f265f97b78f065a712ab4074a89f5b5"
+  },
+  {
+    "name": "libpng-patch",
+    "url": "https://wrapdb.mesonbuild.com/v2/libpng_1.6.59-1/get_patch",
+    "file": "libpng-patch.patch.zip",
+    "sha256": "d20d5e20516a550817026b0074c4051ff4342da43f0600827316ea85f89d1d38"
+  },
+  {
+    "name": "google-brotli-source",
+    "url": "https://github.com/google/brotli/archive/v1.1.0.tar.gz",
+    "file": "google-brotli-source.tar.gz",
+    "sha256": "e720a6ca29428b803f4ad165371771f5398faba397edf6778837a18599ea13ff"
+  },
+  {
+    "name": "google-brotli-patch",
+    "url": "https://wrapdb.mesonbuild.com/v2/google-brotli_1.1.0-3/get_patch",
+    "file": "google-brotli-patch.patch.zip",
+    "sha256": "77e75a3bb019a4b653195a15af17cc65c56fb8cced2519154fce4e6bb43c74e2"
+  },
+  {
+    "name": "fribidi-source",
+    "url": "https://github.com/fribidi/fribidi/releases/download/v1.0.18/fribidi-1.0.18.tar.xz",
+    "file": "fribidi-source.tar.xz",
+    "sha256": "1de5e8073d035388b71d0b2d452b1da1f8caeea8a7702997b401fe1b6250727f"
+  },
+  {
+    "name": "harfbuzz-source",
+    "url": "https://github.com/harfbuzz/harfbuzz/releases/download/13.0.1/harfbuzz-13.0.1.tar.xz",
+    "file": "harfbuzz-source.tar.xz",
+    "sha256": "3553d943401c34ab9b8c75f35cdb8452ca660233b0e9d4a22395ce5245484bd7"
+  },
+  {
+    "name": "icu-source",
+    "url": "https://github.com/unicode-org/icu/releases/download/release-77-1/icu4c-77_1-src.tgz",
+    "file": "icu-source.tar.gz",
+    "sha256": "588e431f77327c39031ffbb8843c0e3bc122c211374485fa87dc5f3faff24061"
+  },
+  {
+    "name": "icu-patch",
+    "url": "https://wrapdb.mesonbuild.com/v2/icu_77.1-3/get_patch",
+    "file": "icu-patch.patch.zip",
+    "sha256": "df23a720ece4cd8c76ef50bcafe0d800c8c11117806bf207d65973a95f0dcea7"
+  },
+  {
+    "name": "dlfcn-win32-source",
+    "url": "https://github.com/dlfcn-win32/dlfcn-win32/archive/refs/tags/v1.4.2.tar.gz",
+    "file": "dlfcn-win32-source.tar.gz",
+    "sha256": "f61a874bc9163ab488accb364fd681d109870c86e8071f4710cbcdcbaf9f2565"
+  },
+  {
+    "name": "dlfcn-win32-patch",
+    "url": "https://wrapdb.mesonbuild.com/v2/dlfcn-win32_1.4.2-1/get_patch",
+    "file": "dlfcn-win32-patch.patch.zip",
+    "sha256": "a1331bda3bd47e4b4a7fb91eb820c70e4d20e34615f8849d26d59602609e8db6"
+  },
+  {
+    "name": "libunibreak-source",
+    "url": "https://github.com/adah1972/libunibreak/releases/download/libunibreak_6_1/libunibreak-6.1.tar.gz",
+    "file": "libunibreak-source.tar.gz",
+    "sha256": "cc4de0099cf7ff05005ceabff4afed4c582a736abc38033e70fdac86335ce93f"
+  },
+  {
+    "name": "libunibreak-patch",
+    "url": "https://wrapdb.mesonbuild.com/v2/libunibreak_6.1-1/get_patch",
+    "file": "libunibreak-patch.patch.zip",
+    "sha256": "830688953398bcb5ca8d88e619b0babbb31de95b31f47234adb0245bce95cf14"
+  },
+  {
+    "name": "fontconfig-source",
+    "url": "https://gitlab.freedesktop.org/api/v4/projects/890/packages/generic/fontconfig/2.18.3/fontconfig-2.18.3.tar.xz",
+    "file": "fontconfig-source.tar.xz",
+    "sha256": "4f7b554a38cdf78c033f666c8871f3749e14a094f65a07f630c91ed0b43d35e3"
+  },
+  {
+    "name": "json-c-source",
+    "url": "https://s3.amazonaws.com/json-c_releases/releases/json-c-0.18.tar.gz",
+    "file": "json-c-source.tar.gz",
+    "sha256": "876ab046479166b869afc6896d288183bbc0e5843f141200c677b3e8dfb11724"
+  },
+  {
+    "name": "json-c-patch",
+    "url": "https://wrapdb.mesonbuild.com/v2/json-c_0.18-2/get_patch",
+    "file": "json-c-patch.patch.zip",
+    "sha256": "bf2769f50f2506f517c0e0fd3275c889b7c4269e3053441ce766cc94e09aea7e"
+  },
+  {
+    "name": "expat-source",
+    "url": "https://github.com/libexpat/libexpat/releases/download/R_2_8_5/expat-2.8.5.tar.xz",
+    "file": "expat-source.tar.xz",
+    "sha256": "1e727b8933ec51a77a9a9d9afcf8e688bce45d907c13e36ab7393fe36e703182"
+  },
+  {
+    "name": "expat-patch",
+    "url": "https://wrapdb.mesonbuild.com/v2/expat_2.8.5-1/get_patch",
+    "file": "expat-patch.patch.zip",
+    "sha256": "38120ab785e70f03e79a226e1849fcf4aaa406b05e69c30bb5d6826b8553dc04"
+  },
+  {
+    "name": "curl-source",
+    "url": "https://github.com/curl/curl/releases/download/curl-8_12_1/curl-8.12.1.tar.xz",
+    "file": "curl-source.tar.xz",
+    "sha256": "0341f1ed97a26c811abaebd37d62b833956792b7607ea3f15d001613c76de202"
+  },
+  {
+    "name": "curl-patch",
+    "url": "https://wrapdb.mesonbuild.com/v2/curl_8.12.1-2/get_patch",
+    "file": "curl-patch.patch.zip",
+    "sha256": "bfd8886cc76ccfab52b1b0472e6c682cdf5374a4c30be2427326f2f495de4eba"
+  },
+  {
+    "name": "libssh2-source",
+    "url": "https://github.com/libssh2/libssh2/archive/libssh2-1.11.1.tar.gz",
+    "file": "libssh2-source.tar.gz",
+    "sha256": "82b35c61c78b475647bdc981a183c5b5ab0d979e1caee94186e8f9150f2b0d0d"
+  },
+  {
+    "name": "libssh2-patch",
+    "url": "https://wrapdb.mesonbuild.com/v2/libssh2_1.11.1-2/get_patch",
+    "file": "libssh2-patch.patch.zip",
+    "sha256": "652ff9402086a8aef6327ff843bc53adf3119dd45b179b76483eeacc7ad73f46"
+  },
+  {
+    "name": "nghttp2-source",
+    "url": "https://github.com/nghttp2/nghttp2/releases/download/v1.62.1/nghttp2-1.62.1.tar.xz",
+    "file": "nghttp2-source.tar.xz",
+    "sha256": "2345d4dc136fda28ce243e0bb21f2e7e8ef6293d62c799abbf6f633a6887af72"
+  },
+  {
+    "name": "nghttp2-patch",
+    "url": "https://wrapdb.mesonbuild.com/v2/nghttp2_1.62.1-3/get_patch",
+    "file": "nghttp2-patch.patch.zip",
+    "sha256": "4b53c0b0b89825ba61e542d9696b13f52ba33c80a7b6577d3d843aedf9572b1c"
+  },
+  {
+    "name": "libpsl-source",
+    "url": "https://github.com/rockdaboot/libpsl/releases/download/0.23.3/libpsl-0.23.3.tar.gz",
+    "file": "libpsl-source.tar.gz",
+    "sha256": "93941f85a1e7bd593fa94f299233cb5dfc91cd144fd9a78a6ceb75001c5b03be"
+  },
+  {
+    "name": "zstd-source",
+    "url": "https://github.com/facebook/zstd/releases/download/v1.5.7/zstd-1.5.7.tar.gz",
+    "file": "zstd-source.tar.gz",
+    "sha256": "eb33e51f49a15e023950cd7825ca74a4a2b43db8354825ac24fc1b7ee09e6fa3"
+  },
+  {
+    "name": "zstd-patch",
+    "url": "https://wrapdb.mesonbuild.com/v2/zstd_1.5.7-3/get_patch",
+    "file": "zstd-patch.patch.zip",
+    "sha256": "75ccb7b5bd26ae38b9d2db40ea4915504137835c15857ea833e70af1fe6f8686"
+  },
+  {
+    "name": "lz4-source",
+    "url": "https://github.com/lz4/lz4/archive/v1.10.0.tar.gz",
+    "file": "lz4-source.tar.gz",
+    "sha256": "537512904744b35e232912055ccf8ec66d768639ff3abe5788d90d792ec5f48b"
+  },
+  {
+    "name": "lz4-patch",
+    "url": "https://wrapdb.mesonbuild.com/v2/lz4_1.10.0-2/get_patch",
+    "file": "lz4-patch.patch.zip",
+    "sha256": "ce568b4e1a7a593bb233f3ec97af88ceb850524cef802fe3f916b21d8a79b6b6"
+  },
+  {
+    "name": "libuv-source",
+    "url": "https://dist.libuv.org/dist/v1.51.0/libuv-v1.51.0.tar.gz",
+    "file": "libuv-source.tar.gz",
+    "sha256": "5f0557b90b1106de71951a3c3931de5e0430d78da1d9a10287ebc7a3f78ef8eb"
+  },
+  {
+    "name": "libuv-patch",
+    "url": "https://wrapdb.mesonbuild.com/v2/libuv_1.51.0-1/get_patch",
+    "file": "libuv-patch.patch.zip",
+    "sha256": "0fb123dee5e74621a767a8f2a29dde7219c65a01a5fe63e3c8ffeed675a2d820"
+  },
+  {
+    "name": "mujs-source",
+    "url": "https://github.com/ArtifexSoftware/mujs/archive/refs/tags/1.3.8.tar.gz",
+    "file": "mujs-source.tar.gz",
+    "sha256": "506d34882f2620a2fdeb6db63dbb7a8ffd98f417689d8f3c84f2feac275e39a9"
+  },
+  {
+    "name": "mujs-patch",
+    "url": "https://wrapdb.mesonbuild.com/v2/mujs_1.3.8-1/get_patch",
+    "file": "mujs-patch.patch.zip",
+    "sha256": "20bf51cb657b22f02df05815677003f971da5896a7250940fd02bdabab5fe870"
+  },
+  {
+    "name": "luajit-source",
+    "url": "https://github.com/LuaJIT/LuaJIT/archive/04dca7911ea255f37be799c18d74c305b921c1a6.tar.gz",
+    "file": "luajit-source.tar.gz",
+    "sha256": "346b028d9ba85e04b7e23a43cc51ec076574d2efc0d271d4355141b0145cd6e0"
+  },
+  {
+    "name": "luajit-patch",
+    "url": "https://wrapdb.mesonbuild.com/v2/luajit_2.1.1720049189-3/get_patch",
+    "file": "luajit-patch.patch.zip",
+    "sha256": "f08a308599ff48ad73a8020ea592f1cd0f0b19bd9e9246a10503888d51889fe3"
+  },
+  {
+    "name": "sdl2-source",
+    "url": "https://github.com/libsdl-org/SDL/releases/download/release-2.32.8/SDL2-2.32.8.tar.gz",
+    "file": "sdl2-source.tar.gz",
+    "sha256": "0ca83e9c9b31e18288c7ec811108e58bac1f1bb5ec6577ad386830eac51c787e"
+  },
+  {
+    "name": "sdl2-patch",
+    "url": "https://wrapdb.mesonbuild.com/v2/sdl2_2.32.8-1/get_patch",
+    "file": "sdl2-patch.patch.zip",
+    "sha256": "5df17ea39ca418826db20e96bd821fa52b5718dac64b6225119fb6588c2744f0"
+  },
+  {
+    "name": "libusb-source",
+    "url": "https://github.com/libusb/libusb/releases/download/v1.0.30/libusb-1.0.30.tar.bz2",
+    "file": "libusb-source.tar.bz2",
+    "sha256": "fea36f34f9156400209595e300840767ab1a385ede1dc7ee893015aea9c6dbaf"
+  },
+  {
+    "name": "libusb-patch",
+    "url": "https://wrapdb.mesonbuild.com/v2/libusb_1.0.30-1/get_patch",
+    "file": "libusb-patch.patch.zip",
+    "sha256": "f38ed8dea259864a90639f85ddd4a4d589c569af202af637cb40344681604797"
+  },
+  {
+    "name": "wayland-source",
+    "url": "https://gitlab.freedesktop.org/wayland/wayland/-/releases/1.26.0/downloads/wayland-1.26.0.tar.xz",
+    "file": "wayland-source.tar.xz",
+    "sha256": "64176eaa46e4969903e286f8e5ef8331affc17fdf03ac9b58381d2b23162b7a3"
+  },
+  {
+    "name": "libffi-source",
+    "url": "https://github.com/libffi/libffi/releases/download/v3.5.2/libffi-3.5.2.tar.gz",
+    "file": "libffi-source.tar.gz",
+    "sha256": "f3a3082a23b37c293a4fcd1053147b371f2ff91fa7ea1b2a52e335676bac82dc"
+  },
+  {
+    "name": "libffi-patch",
+    "url": "https://wrapdb.mesonbuild.com/v2/libffi_3.5.2-2/get_patch",
+    "file": "libffi-patch.patch.zip",
+    "sha256": "74ed624f74cd860be3bdf6d473b70ab88707bdf2f940191fbcb577e2a49a9710"
+  },
+  {
+    "name": "wayland-protocols-source",
+    "url": "https://gitlab.freedesktop.org/wayland/wayland-protocols/-/releases/1.49/downloads/wayland-protocols-1.49.tar.xz",
+    "file": "wayland-protocols-source.tar.xz",
+    "sha256": "ec4c8f74942d6dff7ace8b4ce4764f0ef9ff618a935d974ea77edee2ad240b14"
+  },
+  {
+    "name": "uchardet-source",
+    "url": "https://www.freedesktop.org/software/uchardet/releases/uchardet-0.0.8.tar.xz",
+    "file": "uchardet-source.tar.xz",
+    "sha256": "e97a60cfc00a1c147a674b097bb1422abd9fa78a2d9ce3f3fdcc2e78a34ac5f0"
+  },
+  {
+    "name": "uchardet-patch",
+    "url": "https://wrapdb.mesonbuild.com/v2/uchardet_0.0.8-1/get_patch",
+    "file": "uchardet-patch.patch.zip",
+    "sha256": "08077037aabc920d461794e8d81596efe80b9a7d7792e090fd89db9c1dc9fd76"
+  },
+  {
+    "name": "libjpeg-turbo-source",
+    "url": "https://github.com/libjpeg-turbo/libjpeg-turbo/releases/download/3.2.0/libjpeg-turbo-3.2.0.tar.gz",
+    "file": "libjpeg-turbo-source.tar.gz",
+    "sha256": "6f30092cef9fb839779646608f4ee14ae3cbac989c47fa05e841b0841f09878e"
+  },
+  {
+    "name": "libjpeg-turbo-patch",
+    "url": "https://wrapdb.mesonbuild.com/v2/libjpeg-turbo_3.2.0-1/get_patch",
+    "file": "libjpeg-turbo-patch.patch.zip",
+    "sha256": "c746b7b102de8f7660b9df30b2d68fd75dfbab45ed658eda257c1976e3371d2e"
+  },
+  {
+    "name": "spng-source",
+    "url": "https://github.com/randy408/libspng/archive/refs/tags/v0.7.4.tar.gz",
+    "file": "spng-source.tar.gz",
+    "sha256": "47ec02be6c0a6323044600a9221b049f63e1953faf816903e7383d4dc4234487"
+  },
+  {
+    "name": "mpv",
+    "url": "https://github.com/mpv-player/mpv/archive/b0841e8c4d156b8403dc1876c4cbd9011eb583f3.tar.gz",
+    "repo": "mpv-player/mpv",
+    "ref": "b0841e8c4d156b8403dc1876c4cbd9011eb583f3",
+    "file": "mpv.tar.gz",
+    "sha256": "a4a79fa6ca728762ac407734b0f93dbcbba250c3bb3bf97b77a342042be802e4"
+  },
+  {
+    "name": "shaderc",
+    "url": "https://github.com/google/shaderc/archive/4f0683ab2419ecbb9e18c9edfd4ffd70c2ba8cc6.tar.gz",
+    "repo": "google/shaderc",
+    "ref": "4f0683ab2419ecbb9e18c9edfd4ffd70c2ba8cc6",
+    "file": "shaderc.tar.gz",
+    "sha256": "8ef64ac8c7a15e9270997f0275f3a3763f5cbbcd78dd1d13a23b553e62e57141"
+  },
+  {
+    "name": "subrandr",
+    "url": "https://github.com/afishhh/subrandr/archive/a41311bb5e382abcc47ef141e2ea1098d22a8d58.tar.gz",
+    "repo": "afishhh/subrandr",
+    "ref": "a41311bb5e382abcc47ef141e2ea1098d22a8d58",
+    "file": "subrandr.tar.gz",
+    "sha256": "d370984e05453e2db582ad7ce79f77a2e700941978f5fcafb5db49717fe9dbce"
+  },
+  {
+    "name": "SPIRV-Cross",
+    "url": "https://github.com/KhronosGroup/SPIRV-Cross/archive/57e4efcc84112abcd426dc5ec248b5339bee04f2.tar.gz",
+    "repo": "KhronosGroup/SPIRV-Cross",
+    "ref": "57e4efcc84112abcd426dc5ec248b5339bee04f2",
+    "file": "SPIRV-Cross.tar.gz",
+    "sha256": "59f15a74725f96a1e15f0fa708d54a217ab659eeef894c4d7e44cc67837d3e3a"
+  },
+  {
+    "name": "Vulkan-Loader",
+    "url": "https://github.com/KhronosGroup/Vulkan-Loader/archive/1058514f18cdcc61d1e558dfad3a6ae3d4ceaae5.tar.gz",
+    "repo": "KhronosGroup/Vulkan-Loader",
+    "ref": "1058514f18cdcc61d1e558dfad3a6ae3d4ceaae5",
+    "file": "Vulkan-Loader.tar.gz",
+    "sha256": "fded29a233a807c3754860418c84db60b82b18dcc5a42c32b20611a86c511db7"
+  },
+  {
+    "name": "libjxl",
+    "url": "https://github.com/libjxl/libjxl/archive/38353ef442df5520e41e1c1d5ccdf46d066eaa68.tar.gz",
+    "repo": "libjxl/libjxl",
+    "ref": "38353ef442df5520e41e1c1d5ccdf46d066eaa68",
+    "file": "libjxl.tar.gz",
+    "sha256": "c6c8cfbb5cde5becd587c562c6d129a8c2747a7ef038cd0dedfd0bd401755989"
+  },
+  {
+    "name": "libass",
+    "url": "https://github.com/libass/libass/archive/00fe2ec7ae677b7568fbbcbcbcb67d34bb4292a3.tar.gz",
+    "repo": "libass/libass",
+    "ref": "00fe2ec7ae677b7568fbbcbcbcb67d34bb4292a3",
+    "file": "libass.tar.gz",
+    "sha256": "0f9f1df8079142305f7fdd2fbacf7561987aa6cd06f6facb9a8823089c1dd94c"
+  },
+  {
+    "name": "amf-headers",
+    "url": "https://github.com/GPUOpen-LibrariesAndSDKs/AMF/releases/download/v1.5.0/AMF-headers-v1.5.0.tar.gz",
+    "file": "amf-headers.tar.gz",
+    "sha256": "d569647fa26f289affe81a206259fa92f819d06db1e80cc334559953e82a3f01"
+  },
+  {
+    "name": "vapoursynth",
+    "url": "https://github.com/vapoursynth/vapoursynth/archive/R80.tar.gz",
+    "repo": "vapoursynth/vapoursynth",
+    "ref": "R80",
+    "file": "vapoursynth.tar.gz",
+    "sha256": "a35abe97cf9cb2d74b2f44387e43509a80deab7e482a5ca7b1b981c584583643"
+  },
+  {
+    "name": "testdata-73695d30",
+    "url": "https://github.com/libjxl/testdata/archive/73695d303670c90e4d506ea89d9901b081385089.tar.gz",
+    "repo": "libjxl/testdata",
+    "ref": "73695d303670c90e4d506ea89d9901b081385089",
+    "file": "testdata-73695d30.tar.gz",
+    "sha256": "380a58890e11513d34f1ed1e686e3c2cee97931cc9faaa80b33fd6c8d2640301"
+  },
+  {
+    "name": "brotli-db24a98a",
+    "url": "https://github.com/google/brotli/archive/db24a98aed38a16de78cc05ca15cdd8dc2a0d92d.tar.gz",
+    "repo": "google/brotli",
+    "ref": "db24a98aed38a16de78cc05ca15cdd8dc2a0d92d",
+    "file": "brotli-db24a98a.tar.gz",
+    "sha256": "113b9685dfc14dd2f3360d077283266eec2fbdfb0fe3e5600f11be151da0d68e"
+  },
+  {
+    "name": "googletest-6910c9d9",
+    "url": "https://github.com/google/googletest/archive/6910c9d9165801d8827d628cb72eb7ea9dd538c5.tar.gz",
+    "repo": "google/googletest",
+    "ref": "6910c9d9165801d8827d628cb72eb7ea9dd538c5",
+    "file": "googletest-6910c9d9.tar.gz",
+    "sha256": "bde221be7f3841fcbc3971665d77d717116394a42155d988ee6407dfc39f1f09"
+  },
+  {
+    "name": "highway-457c8917",
+    "url": "https://github.com/google/highway/archive/457c891775a7397bdb0376bb1031e6e027af1c48.tar.gz",
+    "repo": "google/highway",
+    "ref": "457c891775a7397bdb0376bb1031e6e027af1c48",
+    "file": "highway-457c8917.tar.gz",
+    "sha256": "5124b0501c98d9930dbb065bfa1a5bbbd59ce0f12facb7e1e33aaef01a5f1f1a"
+  },
+  {
+    "name": "Little-CMS-51763476",
+    "url": "https://github.com/mm2/Little-CMS/archive/5176347635785e53ee5cee92328f76fda766ecc6.tar.gz",
+    "repo": "mm2/Little-CMS",
+    "ref": "5176347635785e53ee5cee92328f76fda766ecc6",
+    "file": "Little-CMS-51763476.tar.gz",
+    "sha256": "55c92b24f939a8493b07f076bee849af656a13cc69f330816e6936e95b312396"
+  },
+  {
+    "name": "libjpeg-turbo-8ecba364",
+    "url": "https://github.com/libjpeg-turbo/libjpeg-turbo/archive/8ecba3647edb6dd940463fedf38ca33a8e2a73d1.tar.gz",
+    "repo": "libjpeg-turbo/libjpeg-turbo",
+    "ref": "8ecba3647edb6dd940463fedf38ca33a8e2a73d1",
+    "file": "libjpeg-turbo-8ecba364.tar.gz",
+    "sha256": "ed729127097af5000bfeddc6b3e679c4363bb1618ebfc07efb6b47f576471b4b"
+  },
+  {
+    "name": "libpng-872555f4",
+    "url": "https://github.com/pnggroup/libpng/archive/872555f4ba910252783af1507f9e7fe1653be252.tar.gz",
+    "repo": "pnggroup/libpng",
+    "ref": "872555f4ba910252783af1507f9e7fe1653be252",
+    "file": "libpng-872555f4.tar.gz",
+    "sha256": "f7ebcdc408a26d45244d9ef3d35d732a5482a77c55d1d40bf1eb748030691097"
+  },
+  {
+    "name": "sjpeg-94e0df6d",
+    "url": "https://github.com/webmproject/sjpeg/archive/94e0df6d0f8b44228de5be0ff35efb9f946a13c9.tar.gz",
+    "repo": "webmproject/sjpeg",
+    "ref": "94e0df6d0f8b44228de5be0ff35efb9f946a13c9",
+    "file": "sjpeg-94e0df6d.tar.gz",
+    "sha256": "ac94917fe745a674eabf1e044f23ec55cd5a548c9869c06ec4b19da14ee0227d"
+  },
+  {
+    "name": "skcms-96d9171c",
+    "url": "https://github.com/google/skcms/archive/96d9171c94b937a1b5f0293de7309ac16311b722.tar.gz",
+    "repo": "google/skcms",
+    "ref": "96d9171c94b937a1b5f0293de7309ac16311b722",
+    "file": "skcms-96d9171c.tar.gz",
+    "sha256": "9bb4b5bba0b7c04f6c2bce9ff713d61e23c9a20c4945161ae16290498ad74627"
+  },
+  {
+    "name": "zlib-51b7f2ab",
+    "url": "https://github.com/madler/zlib/archive/51b7f2abdade71cd9bb0e7a373ef2610ec6f9daf.tar.gz",
+    "repo": "madler/zlib",
+    "ref": "51b7f2abdade71cd9bb0e7a373ef2610ec6f9daf",
+    "file": "zlib-51b7f2ab.tar.gz",
+    "sha256": "d9e270d46252734aa49770fbc544125391617956266f220bd63216c834f3a522"
+  },
+  {
+    "name": "Vulkan-Headers-74d8a6cb",
+    "url": "https://github.com/KhronosGroup/Vulkan-Headers/archive/74d8a6cb930c68ef617b202c3ff3c59d919e086b.tar.gz",
+    "repo": "KhronosGroup/Vulkan-Headers",
+    "ref": "74d8a6cb930c68ef617b202c3ff3c59d919e086b",
+    "file": "Vulkan-Headers-74d8a6cb.tar.gz",
+    "sha256": "75967a8288ff16044a86d1af462b96d2e75c435937efb75f2bb4102ab0382f29"
+  },
+  {
+    "name": "fast_float-97b54ca9",
+    "url": "https://github.com/fastfloat/fast_float/archive/97b54ca9e75f5303507699d27c6b4f4efe4641a1.tar.gz",
+    "repo": "fastfloat/fast_float",
+    "ref": "97b54ca9e75f5303507699d27c6b4f4efe4641a1",
+    "file": "fast_float-97b54ca9.tar.gz",
+    "sha256": "2b132274539286e41f37857cac22aa8441d21bd86d55de825a3342b149f66801"
+  },
+  {
+    "name": "glad-73db193f",
+    "url": "https://github.com/Dav1dde/glad/archive/73db193f853e2ee079bf3ca8a64aa2eaf6459043.tar.gz",
+    "repo": "Dav1dde/glad",
+    "ref": "73db193f853e2ee079bf3ca8a64aa2eaf6459043",
+    "file": "glad-73db193f.tar.gz",
+    "sha256": "33dbeae44d8315ece57e14eba4b1b4a02ac5406d1c4f49cd20048c91522a6b9a"
+  },
+  {
+    "name": "jinja-15206881",
+    "url": "https://github.com/pallets/jinja/archive/15206881c006c79667fe5154fe80c01c65410679.tar.gz",
+    "repo": "pallets/jinja",
+    "ref": "15206881c006c79667fe5154fe80c01c65410679",
+    "file": "jinja-15206881.tar.gz",
+    "sha256": "b88a20dcc2e34072fcf4159325bc6c34cd4b29a81a8b83d15d2f28ba561da296"
+  },
+  {
+    "name": "markupsafe-297fc8e3",
+    "url": "https://github.com/pallets/markupsafe/archive/297fc8e356e6836a62087949245d09a28e9f1b13.tar.gz",
+    "repo": "pallets/markupsafe",
+    "ref": "297fc8e356e6836a62087949245d09a28e9f1b13",
+    "file": "markupsafe-297fc8e3.tar.gz",
+    "sha256": "da7c010c9c81a66ac73036558c1fcb6212b50482f43211cd1254035b94f82414"
+  },
+  {
+    "name": "Nuklear-242f35ef",
+    "url": "https://github.com/Immediate-Mode-UI/Nuklear/archive/242f35efa067a46c595645eeda7b1771ea1f83b1.tar.gz",
+    "repo": "Immediate-Mode-UI/Nuklear",
+    "ref": "242f35efa067a46c595645eeda7b1771ea1f83b1",
+    "file": "Nuklear-242f35ef.tar.gz",
+    "sha256": "ac567995f917c10a722409e0141d226e737d06488b0a31166f6e4925da8e58f0"
+  },
+  {
+    "name": "ffmpeg-meson-port",
+    "url": "https://gitlab.freedesktop.org/gstreamer/meson-ports/ffmpeg/-/archive/7cb5051/ffmpeg-7cb5051.tar.gz",
+    "file": "ffmpeg-meson-port.tar.gz",
+    "sha256": "bf5e4383e982290ed376b83180c59a04765a193f0c0f993004f946671cd2b251"
+  },
+  {
+    "name": "libplacebo",
+    "url": "https://code.videolan.org/videolan/libplacebo/-/archive/v7.387.0/libplacebo-v7.387.0.tar.gz",
+    "file": "libplacebo.tar.gz",
+    "sha256": "3bf5d72786682c194387c33d563872f6bfe202a9816f9dde6535a31a9b2e0d74"
+  },
+  {
+    "name": "dav1d",
+    "url": "https://code.videolan.org/videolan/dav1d/-/archive/1.5.5/dav1d-1.5.5.tar.gz",
+    "file": "dav1d.tar.gz",
+    "sha256": "76ad07ab121d68407b64a6f50f540c90ca0b066d178bdc9adbea14acf4ce25a9"
+  },
+  {
+    "name": "shaderc-abseil",
+    "url": "https://github.com/abseil/abseil-cpp/archive/dbf88f932096c7f7714356e919f04749eb87c3e9.tar.gz",
+    "file": "shaderc-abseil.tar.gz",
+    "sha256": "e82365b76d28bdb105593f5ffdc8efe8b00625951d168e00d12df35b0f3ce98c"
+  },
+  {
+    "name": "shaderc-effcee",
+    "url": "https://github.com/google/effcee/archive/f8e8a164822d4f65e757bff66bc00e1567959aa0.tar.gz",
+    "file": "shaderc-effcee.tar.gz",
+    "sha256": "7c3f76f36d591578db29f0fa9abf16826a091b6da654a2797a84b88bf264cf52"
+  },
+  {
+    "name": "shaderc-glslang",
+    "url": "https://github.com/KhronosGroup/glslang/archive/73b25650df6dc4545966674531e6b7cc8f5d2407.tar.gz",
+    "file": "shaderc-glslang.tar.gz",
+    "sha256": "96b0405991c6679ab24aadf8e568a107f97f118024a950ef85c2e6c627577e73"
+  },
+  {
+    "name": "shaderc-googletest",
+    "url": "https://github.com/google/googletest/archive/52eb8108c5bdec04579160ae17225d66034bd723.tar.gz",
+    "file": "shaderc-googletest.tar.gz",
+    "sha256": "745c55415660044610f7fcd3af7a6420d5de16a7dbb9ebfe2e131275676232be"
+  },
+  {
+    "name": "shaderc-re2",
+    "url": "https://github.com/google/re2/archive/2da0056814cf180480a19f5cf811e7e1c054bf6d.tar.gz",
+    "file": "shaderc-re2.tar.gz",
+    "sha256": "64c9f0df861fe9b4119e842980ebc350a61b63a6165934711d10bc79f8a47097"
+  },
+  {
+    "name": "shaderc-spirv_headers",
+    "url": "https://github.com/KhronosGroup/SPIRV-Headers/archive/86f980c731e62ae4eaf383d320449d71687936bf.tar.gz",
+    "file": "shaderc-spirv_headers.tar.gz",
+    "sha256": "d11ef011d0788ed002d7cc96224d298f43b126cabe887cd4d46199cb19ecf386"
+  },
+  {
+    "name": "shaderc-spirv_tools",
+    "url": "https://github.com/KhronosGroup/SPIRV-Tools/archive/71f287f18ed78d496e724fbfb1c3feae3a2af75a.tar.gz",
+    "file": "shaderc-spirv_tools.tar.gz",
+    "sha256": "47440727066ce496df8588caaf74b1623da2aa49d170db0b60eb812de7940ec7"
+  },
+  {
+    "name": "aom",
+    "url": "https://aomedia.googlesource.com/aom/+archive/05acd5cd25af0d4de6d41ba143f1a29d5ec89dd7.tar.gz",
+    "file": "aom.tar.gz",
+    "sha256": "6426000961ddd832a2443610d9b2c158066f3fc4246946200dcbc19004f44271"
+  }
+]

@@ -1,6 +1,33 @@
 use std::sync::mpsc;
-use tauri::Manager;
+use tauri::{Emitter, Manager};
 use windows_sys::Win32::UI::WindowsAndMessaging::*;
+
+// A child HWND receives pointer input instead of WebView2. Observe the desktop
+// cursor while Aster is active so fullscreen chrome can always be revealed.
+pub fn monitor_pointer(app: tauri::AppHandle, active: std::sync::Arc<dyn Fn() -> bool + Send + Sync>, session: String) {
+    let Some(window) = app.get_webview_window("main") else { return };
+    let Ok(hwnd) = window.hwnd() else { return };
+    let parent = hwnd.0 as usize;
+    std::thread::spawn(move || {
+        let mut previous = None;
+        while active() {
+            let mut point = windows_sys::Win32::Foundation::POINT { x: 0, y: 0 };
+            let mut bounds = windows_sys::Win32::Foundation::RECT { left: 0, top: 0, right: 0, bottom: 0 };
+            let inside = unsafe {
+                GetForegroundWindow() as usize == parent && GetCursorPos(&mut point) != 0
+                    && GetWindowRect(parent as _, &mut bounds) != 0
+                    && point.x >= bounds.left && point.x < bounds.right
+                    && point.y >= bounds.top && point.y < bounds.bottom
+            };
+            let position = (point.x, point.y);
+            if inside && previous != Some(position) {
+                let _ = app.emit("mpv-playback", serde_json::json!({"sessionId":session,"kind":"input","action":"activity"}));
+            }
+            previous = if inside { Some(position) } else { None };
+            std::thread::sleep(std::time::Duration::from_millis(100));
+        }
+    });
+}
 
 pub fn create(app: &tauri::AppHandle, x: f64, y: f64, width: f64, height: f64) -> Result<usize, String> {
     validate(x, y, width, height)?;

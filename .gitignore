@@ -12,3 +12,5 @@ playwright-report/
 *.log
 
 src-tauri/gen/schemas/
+
+src-tauri/resources/player/
