@@ -91,7 +91,8 @@ test('one click chooses preferred quality and hides private source URLs', async 
   await expect(page.getByRole('region',{name:'Playback sources'})).toBeVisible();
   await page.getByRole('button',{name:/Play source: 1080p/}).click();
   await expect(page.locator('video')).toHaveAttribute('src',/quality=1080/);
-  await expect.poll(()=>page.locator('video').evaluate((v:HTMLVideoElement)=>v.currentTime)).toBeGreaterThanOrEqual(5);
+  // Browser decoding can round the requested seek to a nearby video frame.
+  await expect.poll(()=>page.locator('video').evaluate((v:HTMLVideoElement)=>v.currentTime)).toBeGreaterThanOrEqual(4.8);
   await expect(page.locator('.detail-body')).toHaveCount(0);
 });
 

@@ -1,5 +1,5 @@
 .cinema-shell { background:#0c121c; }
-.cinema-shell main { margin-left:76px; width:calc(100% - 76px); padding:0; background:#0c121c; }
+.cinema-shell main { margin-left:76px; width:calc(100% - 76px); max-width:none; min-width:0; padding:0; background:#0c121c; }
 .cinema-shell .sidebar { width:76px; padding:24px 12px; background:linear-gradient(90deg,#080d16,#080d16e8); border:0; z-index:5; align-items:center; }
 .cinema-shell .brand { margin:0 0 34px; padding:0; }
 .cinema-shell .brand-mark { font-size:42px; }
@@ -85,3 +85,12 @@
 .detail-art { box-shadow:inset 0 -35px 35px -25px #111b29; }
 @media(max-width:900px) { .cinema-shell .content-page { padding:30px 28px; } }
 @media(max-width:600px) { .cinema-shell .content-page { padding:25px 20px; } }
+.hover-trailer{position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .3s;background:#000}
+.hover-trailer.is-playing{opacity:1}
+.hover-trailer video,.hover-trailer iframe{display:block;width:100%;height:100%;border:0;object-fit:contain}
+.trailer-label{position:absolute;top:12px;left:12px;font-size:9px;padding:5px 8px;border-radius:4px;background:#080e18c9;color:#fff}
+.landscape-caption{pointer-events:none}
+.landscape-card:has(.hover-trailer.is-playing) .landscape-caption{opacity:0}
+@media(prefers-reduced-motion:reduce){.hover-trailer{transition:none}}
+.card-art:has(.hover-trailer.is-playing)>.card-tag,.card-art:has(.hover-trailer.is-playing)>.art-title,.card-art:has(.hover-trailer.is-playing)>.card-play{opacity:0}
+.landscape-card:has(.hover-trailer.is-playing) .landscape-play,.landscape-card:has(.hover-trailer.is-playing) .landscape-quickplay,.landscape-card:has(.hover-trailer.is-playing) .landscape-favorite{opacity:0;pointer-events:none}

@@ -65,3 +65,25 @@ test('sidebar expands over content on hover and keyboard focus', async ({ page }
   await sidebar.getByRole('button', { name: 'Library', exact: true }).focus();
   await expect(sidebar).toHaveCSS('width', '248px');
 });
+
+for (const width of [1440, 2560, 3840]) {
+  test(`catalog fills the available width at ${width}px and the final card is reachable`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 1440 });
+    await page.route('https://wide.aster.test/**', route => route.fulfill({ json: { metas: Array.from({ length: 12 }, (_, i) => ({ id: `wide:${i}`, name: `Wide movie ${i}`, background: '/art/forest.jpg' })) } }));
+    await page.addInitScript(() => localStorage.setItem('aster.state.v1', JSON.stringify({ version: 1, seeded: true, items: {}, addons: [{ url: 'https://wide.aster.test/manifest.json', manifest: { id: 'wide', name: 'Wide Catalog', version: '1', description: 'Fixture', resources: ['catalog'], types: ['movie'], catalogs: [{ id: 'popular', type: 'movie', name: 'Popular Movies' }] } }] })));
+    await page.goto('/');
+    const row = page.locator('.cinema-rail');
+    await expect(row.locator('article')).toHaveCount(12);
+    const box = await row.boundingBox();
+    expect(box!.x + box!.width).toBeGreaterThan(width - 25);
+    const arrows = await page.locator('.rail-arrows').boundingBox();
+    expect(arrows!.x + arrows!.width).toBeGreaterThan(width - 90);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+    await row.evaluate(el => { el.style.scrollBehavior = 'auto'; el.scrollLeft = el.scrollWidth; });
+    await expect.poll(async () => {
+      const last = await row.locator('article').last().boundingBox();
+      return last!.x + last!.width;
+    }).toBeLessThan(width);
+    if (width === 2560) await page.screenshot({ path: '../aster-fullscreen-layout-fixed.png' });
+  });
+}

@@ -7,18 +7,18 @@ export interface Collection { id: string; name: string; mediaIds: string[] }
 export interface AppSettings {
   debridService: 'auto' | 'real-debrid' | 'torbox' | 'premiumize' | 'alldebrid';
   accent: 'lime' | 'ice' | 'violet'; density: 'comfortable' | 'compact'; textSize: 'standard' | 'large'; reducedMotion: boolean; pinnedSidebar: boolean;
-  showSpotlight: boolean; showContinue: boolean; showRatings: boolean; showLogos: boolean; showBadges: boolean; hiddenRows: string[];
+  hoverTrailers: boolean; showSpotlight: boolean; showContinue: boolean; showRatings: boolean; showLogos: boolean; showBadges: boolean; hiddenRows: string[];
   onlineSearch: boolean; searchDelay: number; searchSort: 'relevance' | 'title' | 'year'; discovery: 'all' | 'movie' | 'series';
   saveHistory: boolean; watchedThreshold: number; profileName: string; collections: Collection[];
   quality: 'auto' | '1080' | '2160' | '720'; resume: boolean; autoNext: boolean; volume: number; speed: number; hardwareDecoding: boolean; subtitleScale: number; subtitleDelay: number; audioDelay: number; seekSeconds: number; controlsDelay: number;
 }
 export const SETTINGS_KEY = 'aster.settings.v1';
-export const defaultSettings = (): AppSettings => ({ debridService: 'auto', accent: 'lime', density: 'comfortable', textSize: 'standard', reducedMotion: false, pinnedSidebar: false, showSpotlight: true, showContinue: true, showRatings: true, showLogos: true, showBadges: true, hiddenRows: [], onlineSearch: true, searchDelay: 350, searchSort: 'relevance', discovery: 'all', saveHistory: true, watchedThreshold: 95, profileName: 'Your space', collections: [], quality: '1080', resume: true, autoNext: true, volume: 100, speed: 1, hardwareDecoding: true, subtitleScale: 1, subtitleDelay: 0, audioDelay: 0, seekSeconds: 10, controlsDelay: 2.5 });
+export const defaultSettings = (): AppSettings => ({ debridService: 'auto', accent: 'lime', density: 'comfortable', textSize: 'standard', reducedMotion: false, pinnedSidebar: false, hoverTrailers: true, showSpotlight: true, showContinue: true, showRatings: true, showLogos: true, showBadges: true, hiddenRows: [], onlineSearch: true, searchDelay: 350, searchSort: 'relevance', discovery: 'all', saveHistory: true, watchedThreshold: 95, profileName: 'Your space', collections: [], quality: '1080', resume: true, autoNext: true, volume: 100, speed: 1, hardwareDecoding: true, subtitleScale: 1, subtitleDelay: 0, audioDelay: 0, seekSeconds: 10, controlsDelay: 2.5 });
 export function normalizeSettings(input: unknown): AppSettings {
   const result = defaultSettings();
   if (!input || typeof input !== 'object') return result;
   const v = input as Record<string, unknown>;
-  for (const key of ['reducedMotion', 'pinnedSidebar', 'showSpotlight', 'showContinue', 'showRatings', 'showLogos', 'showBadges', 'onlineSearch', 'saveHistory', 'resume', 'autoNext', 'hardwareDecoding'] as const) if (typeof v[key] === 'boolean') result[key] = v[key] as boolean;
+  for (const key of ['hoverTrailers', 'reducedMotion', 'pinnedSidebar', 'showSpotlight', 'showContinue', 'showRatings', 'showLogos', 'showBadges', 'onlineSearch', 'saveHistory', 'resume', 'autoNext', 'hardwareDecoding'] as const) if (typeof v[key] === 'boolean') result[key] = v[key] as boolean;
   const enums = { debridService: ['auto', 'real-debrid', 'torbox', 'premiumize', 'alldebrid'], accent: ['lime', 'ice', 'violet'], density: ['comfortable', 'compact'], textSize: ['standard', 'large'], searchSort: ['relevance', 'title', 'year'], discovery: ['all', 'movie', 'series'], quality: ['auto', '1080', '2160', '720'] };
   for (const key of Object.keys(enums) as (keyof typeof enums)[]) if (enums[key].includes(String(v[key]))) Object.assign(result, { [key]: v[key] });
   const ranges = { searchDelay: [250, 1500], watchedThreshold: [80, 99], volume: [0, 100], speed: [.5, 2], subtitleScale: [.5, 2], subtitleDelay: [-30, 30], audioDelay: [-5, 5], seekSeconds: [5, 60], controlsDelay: [1, 10] };

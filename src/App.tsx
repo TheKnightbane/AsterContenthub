@@ -17,6 +17,7 @@ import useEpisodeQueue from './useEpisodeQueue';
 import EpisodeControls from './EpisodeControls';
 import EmbeddedPlayer from './EmbeddedPlayer';
 import CinemaHome from './Home';
+import HoverTrailer from './HoverTrailer';
 import SettingsHub from './SettingsHub';
 import { applyTheme } from './theme';
 import { invoke, isTauri } from '@tauri-apps/api/core';
@@ -233,9 +234,11 @@ export default function App({ profile, switchProfile }: { profile: LocalProfile;
   };
 
   function Card({ media, compact = false }: { media: Media; compact?: boolean }) {
+    const [hovered, setHovered] = useState(false);
     const item = state.items[media.id];
-    return <article className={`card ${compact ? 'continue-card' : ''}`}>
+    return <article className={`card ${compact ? 'continue-card' : ''}`} onPointerEnter={e => { if (e.pointerType === 'mouse' && settings.hoverTrailers && !settings.reducedMotion && !matchMedia('(prefers-reduced-motion: reduce)').matches) setHovered(true); }} onPointerLeave={() => setHovered(false)}>
       <button className="card-art" style={{ backgroundImage: `linear-gradient(180deg, transparent 20%, #0009 100%), url("${media.art.replace(/["\\\n\r]/g, '')}")`, backgroundColor: media.accent }} onClick={() => open(media)} aria-label={`View ${media.title}`}>
+        {hovered && settings.hoverTrailers && !settings.reducedMotion && <HoverTrailer media={media} addons={state.addons} />}
         <span className="card-tag">{compact ? 'PICK UP WHERE YOU LEFT OFF' : media.genre}</span>
         <span className="art-title">{media.title}</span><span className="card-play"><Play size={19} fill="currentColor" /></span>
         {compact && <span className="progress"><span style={{ width: `${Math.min(100, (item?.progress?.position ?? 0) / (item?.progress?.duration || 1) * 100)}%` }} /></span>}
