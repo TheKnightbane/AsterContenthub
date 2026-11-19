@@ -17,3 +17,7 @@ Existing library data remains under its original storage key in the default prof
 Browser mpv checks simulate native events; real installed mpv decoding and IPC are covered by the native tests. Alternate track selection uses simulated multi-track fixtures plus native IPC because the included trailer has one audio track and no subtitles. Supabase pairing and progress synchronization were verified live with isolated test profiles. Hosted streaming providers use local/fixture checks; every external personal service account has not been verified live. Native iOS/tvOS apps and external Infuse playback on an Apple device are outside this alpha.
 
 The earlier SMTP experiment is not used for profiles. Resend accepted delivery to its registered test address, but the user did not receive the relay email. The app now uses device sessions and pairing without email. No SMTP secret or sign-in code is part of this repository.
+
+## Packaged Windows alpha
+
+The final 0.1.0-alpha.1 release build and NSIS x64 installer completed successfully. The packaged executable launched as a responsive Aster Content Hub window. Download artifacts have SHA-256 checksums in the release. Native installed-mpv tests, the full browser suite and live two-device pairing checks passed before packaging.

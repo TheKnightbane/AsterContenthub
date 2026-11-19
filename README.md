@@ -42,7 +42,7 @@ The selected season and last played episode are remembered locally; synchronized
 
 Keep a collection backup and at least one connected device. If all devices lose their sessions, there is no email recovery in this alpha. **Reconnect with code** can attach a replacement session using another connected device.
 
-Cloud sync is optional. The published alpha uses a shared Supabase project within its hosting quotas, and alpha availability is not guaranteed. Each device has a separate background identity; database row-level policies allow access only through explicit profile membership. Library metadata, favorites and progress are uploaded only after enabling or pairing sync. Windows sync sessions are stored in Credential Manager; browser development uses browser session storage. Pairing codes are stored hashed on the server.
+Cloud sync is optional. The published alpha uses a shared Supabase project within its hosting quotas, and alpha availability is not guaranteed. Each device has a separate background identity; database row-level policies allow access only through explicit profile membership. Library metadata, favorites and progress are uploaded only after enabling or pairing sync. Windows sync sessions are stored in Credential Manager; browser development uses browser storage. Pairing codes are stored hashed on the server.
 
 ## Services
 
