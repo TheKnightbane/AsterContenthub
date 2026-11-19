@@ -26,7 +26,7 @@ pub async fn integration_auth_begin(provider:String,mut config:Connection)->Resu
     let data:Value=serde_json::from_slice(&bytes(response,256*1024).await?).map_err(|_|"Invalid authorization response.")?;
     let device_code=data["device_code"].as_str().ok_or("No device code returned.")?.to_owned();
     let verification=data["verification_uri_complete"].as_str().or(data["verification_uri"].as_str()).or(data["verification_url"].as_str()).ok_or("No sign-in URL returned.")?;
-    let url=http_url(verification)?;let host=url.host_str().unwrap_or("");if url.scheme()!="https"||!["simkl.com","trakt.tv","app.trakt.tv"].contains(&host){return Err("Unexpected sign-in destination.".into());}
+    let url=http_url(verification)?;let host=url.host_str().unwrap_or("");if url.scheme()!="https"||!["simkl.com","trakt.tv","app.trakt.tv","auth.trakt.tv"].contains(&host){return Err("Unexpected sign-in destination.".into());}
     let session=uuid::Uuid::new_v4().to_string();let interval=data["interval"].as_u64().unwrap_or(5).clamp(5,60);let expires_in=data["expires_in"].as_u64().unwrap_or(900).min(3600);
     let mut map=sessions().lock().map_err(|_|"Authorization state unavailable.")?;map.retain(|_,p|p.expires>now());if map.len()>10{return Err("Too many pending sign-ins. Finish or cancel one first.".into());}
     map.insert(session.clone(),Pending{provider,config,device_code,expires:now()+expires_in,interval,next_poll:now()+interval});

@@ -93,7 +93,24 @@ test('fullscreen fills the video surface, reveals controls on movement, and Esca
   await page.evaluate(() => (window as any).mpvInput('escape'));
   await expect(player).not.toHaveClass(/is-fullscreen/);
   await expect(page.getByRole('button', { name: 'Fullscreen', exact: true })).toBeVisible();
+  // DOM and native video can both report the same physical Escape press.
   await page.keyboard.press('Escape');
+  await expect(player).toBeVisible();
+  await page.waitForTimeout(300);
+  await page.keyboard.press('Escape');
+  await expect(player).toHaveCount(0);
+});
+
+test('native Escape works with hidden controls and no focused web element', async ({ page }) => {
+  await page.goto('/'); await playFixture(page);
+  const player = page.getByRole('dialog', { name: 'Playing Sintel' });
+  await page.getByRole('button', { name: 'Fullscreen', exact: true }).click();
+  await expect(player).toHaveClass(/chrome-hidden/);
+  await page.evaluate(() => { if (document.activeElement instanceof HTMLElement) document.activeElement.blur(); (window as any).mpvInput('escape'); });
+  await expect(player).not.toHaveClass(/is-fullscreen/);
+  await expect(player).toBeVisible();
+  await page.waitForTimeout(300);
+  await page.evaluate(() => (window as any).mpvInput('escape'));
   await expect(player).toHaveCount(0);
 });
 

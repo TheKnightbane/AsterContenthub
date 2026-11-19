@@ -1,6 +1,6 @@
 [package]
 name = "aster-content-hub"
-version = "0.1.0-alpha.3"
+version = "0.1.0-alpha.4"
 description = "Your world of stories"
 authors = ["Aster"]
 edition = "2021"
@@ -16,7 +16,7 @@ reqwest = { version = "0.12", default-features = false, features = ["json", "rus
 keyring = { version = "3", features = ["windows-native"] }
 open = "5"
 tokio = { version = "1", features = ["net", "time", "io-util"] }
-windows-sys = { version = "0.60", features = ["Win32_Foundation", "Win32_UI_WindowsAndMessaging", "Win32_Graphics_Dwm"] }
+windows-sys = { version = "0.60", features = ["Win32_Foundation", "Win32_UI_WindowsAndMessaging", "Win32_Graphics_Dwm", "Win32_UI_Input_KeyboardAndMouse"] }
 roxmltree = "0.21"
 uuid = { version = "1", features = ["v4"] }
 base64 = "0.22"

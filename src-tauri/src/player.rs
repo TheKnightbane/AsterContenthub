@@ -156,10 +156,18 @@ async fn send_command(pipe: &str, command: Value, reply: bool) -> Result<(), Str
         let message = format!("{}\n", json!({"command":command,"request_id":1}));
         client.get_mut().write_all(message.as_bytes()).await.map_err(|_| "Could not send the player command.")?;
         if reply {
-            let mut line = String::new();
-            client.read_line(&mut line).await.map_err(|_| "The player did not respond.")?;
-            let response: Value = serde_json::from_str(&line).map_err(|_| "Invalid player response.")?;
-            if response["error"] != "success" { return Err("This playback control is not available yet.".to_string()); }
+            loop {
+                let mut line = String::new();
+                if client.read_line(&mut line).await.map_err(|_| "The player did not respond.")? == 0 {
+                    return Err("The player connection closed before replying.".to_string());
+                }
+                let response: Value = serde_json::from_str(&line).map_err(|_| "Invalid player response.")?;
+                // mpv sends asynchronous events on this same pipe. Only the
+                // response to our request determines whether a command failed.
+                if response["request_id"] != 1 { continue; }
+                if response["error"] != "success" { return Err("This playback control is not available yet.".to_string()); }
+                break;
+            }
         }
         Ok(())
     };
@@ -236,6 +244,28 @@ pub fn prepare_update(state: &PlayerState) -> Result<(), String> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn ipc_ignores_unsolicited_events_but_preserves_real_command_errors() {
+        tauri::async_runtime::block_on(async {
+            use tokio::io::{AsyncBufReadExt, AsyncWriteExt};
+            for status in ["success", "property unavailable"] {
+                let pipe = format!(r"\\.\pipe\aster-ipc-reply-test-{}", uuid::Uuid::new_v4());
+                let server = tokio::net::windows::named_pipe::ServerOptions::new().first_pipe_instance(true).create(&pipe).unwrap();
+                let peer = tokio::spawn(async move {
+                    server.connect().await.unwrap();
+                    let mut reader = tokio::io::BufReader::new(server);
+                    let mut request = String::new(); reader.read_line(&mut request).await.unwrap();
+                    let reply = format!("{{\"event\":\"playback-restart\"}}\n{}\n", json!({"request_id":1,"error":status}));
+                    reader.get_mut().write_all(reply.as_bytes()).await.unwrap();
+                    reader.get_mut().flush().await.unwrap();
+                    tokio::time::sleep(std::time::Duration::from_millis(50)).await;
+                });
+                let result = send_command(&pipe, json!(["get_property", "time-pos"]), true).await;
+                peer.await.unwrap();
+                assert_eq!(result.is_ok(), status == "success");
+            }
+        });
+    }
     #[test]
     fn validates_and_applies_player_defaults() {
         let options = PlaybackOptions { volume: 65.0, speed: 1.25, hardware_decoding: false, subtitle_scale: 1.2, subtitle_delay: -0.5, audio_delay: 0.2 };

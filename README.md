@@ -1,18 +1,24 @@
 # Aster Content Hub — Windows alpha
 
-A desktop content hub built with Tauri, React, TypeScript and Vite. **0.1.0-alpha.3** is an early testing release.
+A desktop content hub built with Tauri, React, TypeScript and Vite. **0.1.0-alpha.4** is an early testing release.
 
-[Download the Windows alpha](https://github.com/TheKnightbane/AsterContenthub/releases/tag/v0.1.0-alpha.3) · [Report an issue](https://github.com/TheKnightbane/AsterContenthub/issues)
+[Download the Windows alpha](https://github.com/TheKnightbane/AsterContenthub/releases/tag/v0.1.0-alpha.4) · [Report an issue](https://github.com/TheKnightbane/AsterContenthub/issues)
 
 ## Install and preview
 
-Download **AsterContentHub-Setup-0.1.0-alpha.3-x64.exe** from the release page. Windows x64 and Microsoft WebView2 are required. The installer can install WebView2 when needed. This is an unsigned development build; Windows may display an unknown-publisher warning.
+Download **AsterContentHub-Setup-0.1.0-alpha.4-x64.exe** from the release page. Windows x64 and Microsoft WebView2 are required. The installer can install WebView2 when needed. This is an unsigned development build; Windows may display an unknown-publisher warning.
 
-No account, email, API key or Supabase credentials are required to open the app. Your existing Aster library and device credentials are preserved. This build adds automatic updates. Alpha 1/2 users need to install this version once; later signed releases download automatically. Updates install after a minute of inactivity, with a Later option. Playback, open dialogs and editing postpone installation. Settings → About includes Check for updates and an Automatic updates switch. Portable/development previews use manual installation.
+No account, email, API key or Supabase credentials are required to open the app. Your existing Aster library and device credentials are preserved. Automatic updates are included. Alpha 1/2 users need to install this version once; later signed releases download automatically. Updates install after a minute of inactivity, with a Later option. Playback, open dialogs and editing postpone installation. Settings → About includes Check for updates and an Automatic updates switch. Portable/development previews use manual installation.
 
 mpv 0.42.0 is included and selected automatically on first use. No separate player installation is needed. The built-in video player remains available in Settings.
 
-In fullscreen, move the mouse to reveal the timeline and volume controls. Left/Right seek 10 seconds, Up/Down adjust volume, M mutes, F toggles fullscreen and Esc exits fullscreen.
+In fullscreen, move the mouse to reveal the timeline and volume controls. Left/Right seek 10 seconds, Up/Down adjust volume, M mutes, F toggles fullscreen; Esc exits fullscreen, and another press closes playback. Escape is also observed by the native host while Aster is the foreground app, so hidden controls do not swallow it.
+
+## First-time setup
+
+Fresh installs open a guided setup screen. Add Cinemeta for catalog discovery, then paste your own stream-provider manifest. Optionally connect Real-Debrid using your own API token. Every step is skippable and unfinished setup resumes after reopening. Existing configured installations skip onboarding. Settings → About → Run setup again opens it whenever needed. Addons are saved locally; Real-Debrid tokens use Windows Credential Manager. Neither is included in the distributed installer.
+
+Trakt has an Authenticate button, with the shared Aster registration still pending. The owner deferred registering Aster’s own Trakt app; see `PROJECT_NOTES.md`. A future registration can supply the public `VITE_TRAKT_CLIENT_ID` build/repository variable.
 
 ## Start watching
 

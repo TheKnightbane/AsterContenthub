@@ -1,20 +1,36 @@
 use std::sync::mpsc;
 use tauri::{Emitter, Manager};
 use windows_sys::Win32::UI::WindowsAndMessaging::*;
+use windows_sys::Win32::UI::Input::KeyboardAndMouse::{GetAsyncKeyState, VK_ESCAPE};
 
 // A child HWND receives pointer input instead of WebView2. Observe the desktop
 // cursor while Aster is active so fullscreen chrome can always be revealed.
+// Escape is observed only while Aster owns the foreground; it must also work
+// after WebView focus is lost when its fullscreen controls are hidden.
 pub fn monitor_pointer(app: tauri::AppHandle, active: std::sync::Arc<dyn Fn() -> bool + Send + Sync>, session: String) {
     let Some(window) = app.get_webview_window("main") else { return };
     let Ok(hwnd) = window.hwnd() else { return };
     let parent = hwnd.0 as usize;
     std::thread::spawn(move || {
         let mut previous = None;
+        let mut escape_down = false;
+        let mut pointer_poll = std::time::Instant::now();
         while active() {
+            let foreground = unsafe { GetForegroundWindow() as usize == parent };
+            let escape = foreground && unsafe { GetAsyncKeyState(VK_ESCAPE as i32) < 0 };
+            if escape && !escape_down {
+                let _ = app.emit("mpv-playback", serde_json::json!({"sessionId":session,"kind":"input","action":"escape"}));
+            }
+            escape_down = escape;
+            if pointer_poll.elapsed() < std::time::Duration::from_millis(100) {
+                std::thread::sleep(std::time::Duration::from_millis(20));
+                continue;
+            }
+            pointer_poll = std::time::Instant::now();
             let mut point = windows_sys::Win32::Foundation::POINT { x: 0, y: 0 };
             let mut bounds = windows_sys::Win32::Foundation::RECT { left: 0, top: 0, right: 0, bottom: 0 };
             let inside = unsafe {
-                GetForegroundWindow() as usize == parent && GetCursorPos(&mut point) != 0
+                foreground && GetCursorPos(&mut point) != 0
                     && GetWindowRect(parent as _, &mut bounds) != 0
                     && point.x >= bounds.left && point.x < bounds.right
                     && point.y >= bounds.top && point.y < bounds.bottom
@@ -24,7 +40,7 @@ pub fn monitor_pointer(app: tauri::AppHandle, active: std::sync::Arc<dyn Fn() ->
                 let _ = app.emit("mpv-playback", serde_json::json!({"sessionId":session,"kind":"input","action":"activity"}));
             }
             previous = if inside { Some(position) } else { None };
-            std::thread::sleep(std::time::Duration::from_millis(100));
+            std::thread::sleep(std::time::Duration::from_millis(20));
         }
     });
 }

@@ -100,9 +100,11 @@ for(const tracker of ['Trakt','Simkl']) test(tracker+' device sign-in completes 
   await settings(page);
   await page.getByRole('navigation',{name:'Settings sections'}).getByRole('button',{name:/^Tracking/}).click();
   await page.getByRole('button',{name:'Open '+tracker+' connection'}).click();
+  if(tracker==='Trakt')await page.getByText('Advanced app connection',{exact:true}).click();
   await page.getByLabel(tracker+' Client ID').fill('registered-client-id');
-  await page.getByRole('button',{name:'Sign in with code'}).click();
+  await page.getByRole('button',{name:tracker==='Trakt'?'Authenticate':'Sign in with code',exact:true}).click();
   await expect(page.getByText('TEST-CODE',{exact:true})).toBeVisible();
+  if(tracker==='Trakt')expect(await page.evaluate(()=>(window as any).serviceCalls.some((c:any)=>c.command==='integration_open_url'))).toBe(true);
   await expect(page.getByRole('switch',{name:'Automatically sync movies to '+tracker})).toBeVisible({timeout:9000});
   await expect(page.getByRole('switch',{name:'Automatically sync movies to '+tracker})).not.toBeChecked();
   await page.getByRole('switch',{name:'Automatically sync movies to '+tracker}).check();
