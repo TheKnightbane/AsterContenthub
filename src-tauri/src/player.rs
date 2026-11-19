@@ -223,6 +223,16 @@ pub async fn mpv_fullscreen(window: tauri::WebviewWindow, enabled: Option<bool>)
 
 pub fn shutdown(state: &PlayerState) { if let Ok(mut active) = state.0.lock() { if let Some(player) = active.as_mut() { player.stopping = true; let _ = player.child.kill(); } } }
 
+pub fn prepare_update(state: &PlayerState) -> Result<(), String> {
+    let mut active = state.0.lock().map_err(|_| "Player state is unavailable.")?;
+    if let Some(player) = active.as_mut() {
+        if player.child.try_wait().map_err(|_| "Could not inspect playback.")?.is_none() {
+            return Err("Finish playback before installing an update.".into());
+        }
+    }
+    Ok(())
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

@@ -29,3 +29,11 @@ The official mpv 0.42.0 x64 Clang archive is pinned by SHA-256 and packaged with
 Fullscreen chrome hides after the configured inactivity timeout, including when the pointer rests over a control. Active slider drags and open source/track panels keep controls available. Native cursor observations use screen coordinates, and Lua no longer treats layout-induced mouse-pos changes as physical activity.
 
 The final browser suite passed 44 tests (the optional live pairing test was skipped; pairing was verified live for Alpha 1). The bundled mpv executable also passed decoding and IPC/keyboard tests with its app-local Microsoft C++ runtime DLLs present. The NSIS resource manifest includes mpv, Vulkan, runtime DLLs and redistribution notices.
+
+## Alpha 3 — signed automatic updates
+
+33 core/release tests passed. The complete browser suite passed 48 tests with the optional live profile test skipped; all 5 focused updater tests then passed, including the added opt-out persistence case. Coverage includes background downloads, idle application, playback deferral, Later, signature errors, retries, portable eligibility and manual checks. All 16 existing native checks passed with the updater plugins enabled. A real signed NSIS installer passed cryptographic signature and signed-version validation, and changing an installer byte caused verification to fail.
+
+The updater uses a fixed HTTPS GitHub feed and embedded public key with signed-version enforcement. Private signing credentials are excluded from source and stored as Actions secrets; the local encrypted key and Windows-protected password are outside the project repository. Version ordering prevents late older release jobs from moving the feed backwards.
+
+Browser update installation tests simulate native updater IPC; the real installer signature is verified independently. A complete in-place installation between two updater-enabled public releases has not been performed for this first updater release. Alpha 1/2 users require one manual installation. Portable/development previews do not auto-install updates.

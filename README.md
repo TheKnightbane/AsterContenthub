@@ -1,16 +1,16 @@
 # Aster Content Hub — Windows alpha
 
-A desktop content hub built with Tauri, React, TypeScript and Vite. **0.1.0-alpha.2** is an early testing release.
+A desktop content hub built with Tauri, React, TypeScript and Vite. **0.1.0-alpha.3** is an early testing release.
 
-[Download the Windows alpha](https://github.com/TheKnightbane/AsterContenthub/releases/tag/v0.1.0-alpha.2) · [Report an issue](https://github.com/TheKnightbane/AsterContenthub/issues)
+[Download the Windows alpha](https://github.com/TheKnightbane/AsterContenthub/releases/tag/v0.1.0-alpha.3) · [Report an issue](https://github.com/TheKnightbane/AsterContenthub/issues)
 
 ## Install and preview
 
-Download **AsterContentHub-Setup-0.1.0-alpha.2-x64.exe** from the release page, or download **AsterContentHub-Portable-0.1.0-alpha.2-x64.zip** and extract the entire folder. Windows x64 and Microsoft WebView2 are required. The installer can install WebView2 when needed. This is an unsigned development build; Windows may display an unknown-publisher warning.
+Download **AsterContentHub-Setup-0.1.0-alpha.3-x64.exe** from the release page. Windows x64 and Microsoft WebView2 are required. The installer can install WebView2 when needed. This is an unsigned development build; Windows may display an unknown-publisher warning.
 
-No account, email, API key or Supabase credentials are required to open the app. Your existing Aster library and device credentials are preserved. Updates are installed manually from Releases; automatic updating is not included.
+No account, email, API key or Supabase credentials are required to open the app. Your existing Aster library and device credentials are preserved. This build adds automatic updates. Alpha 1/2 users need to install this version once; later signed releases download automatically. Updates install after a minute of inactivity, with a Later option. Playback, open dialogs and editing postpone installation. Settings → About includes Check for updates and an Automatic updates switch. Portable/development previews use manual installation.
 
-mpv 0.42.0 is included and selected automatically on first use. No separate player installation is needed. The built-in video player remains available in Settings. Move the complete extracted folder when using the portable download.
+mpv 0.42.0 is included and selected automatically on first use. No separate player installation is needed. The built-in video player remains available in Settings.
 
 In fullscreen, move the mouse to reveal the timeline and volume controls. Left/Right seek 10 seconds, Up/Down adjust volume, M mutes, F toggles fullscreen and Esc exits fullscreen.
 
@@ -77,7 +77,7 @@ npm run desktop           # Native app with hot reload
 npm test
 npx playwright install chromium
 npm run test:e2e
-npm run desktop:build     # Windows executable and NSIS installer
+npm run desktop:build -- --config src-tauri/tauri.unsigned.conf.json     # Windows executable and NSIS installer
 ```
 
 The workspace helper `Start-Aster.ps1` can also launch `-Mode web`, `-Mode desktop`, `-Mode test` or `-Mode build`. It discovers the workspace-local toolchain when available and otherwise uses standard installed tools.
@@ -103,3 +103,15 @@ Illustrative photographs: Unsplash, under the [Unsplash license](https://unsplas
 ## Bundled player
 
 The Windows package includes the unmodified official mpv 0.42.0 x64 player and Vulkan runtime. Build preparation downloads a pinned, SHA-256-verified archive. Player notices and source information are in `third-party/mpv` and installed under `player`. mpv runs as a separate child process controlled through its IPC interface.
+
+## Publishing automatic updates
+
+Release builds use Tauri updater signatures, which are separate from Windows Authenticode publisher certificates. The initial Windows installer is still unsigned for SmartScreen. The public verification key is bundled with Aster. The encrypted private key is kept outside this repository and in GitHub Actions secrets; never commit it or replace it casually. Keep a secure offline backup because existing installations trust this key.
+
+Bump `package.json`, `package-lock.json`, `src-tauri/Cargo.toml`, `src-tauri/tauri.conf.json`, the About version and release notes together. Commit, then push a matching tag, for example `git tag v0.1.0-alpha.4` followed by `git push origin main v0.1.0-alpha.4`. The **Publish signed Windows update** workflow tests, builds and signs the installer, publishes the versioned release and advances `updater/latest.json`. It also supports Run workflow on GitHub. An ordinary source commit or unsigned uploaded EXE does not become an update. Older release jobs cannot roll the update feed backwards.
+
+Required Actions secrets: `TAURI_SIGNING_PRIVATE_KEY` and `TAURI_SIGNING_PRIVATE_KEY_PASSWORD`. Public backend config uses the repository variables documented above. `Windows alpha checks` deliberately builds without release-signing secrets, including for pull requests.
+
+The app checks at launch and every six hours while open, retries when networking returns, downloads through HTTPS, and verifies the installer signature before offering installation. Check/signature failures leave the running app unchanged. Windows installations are detected by their NSIS uninstaller; portable previews show version availability without converting themselves into installed apps.
+
+Fork maintainers must configure their own app identifier, signing public key, release endpoint and Actions secrets before distributing builds. Do not publish a fork that unintentionally follows the official Aster update feed.

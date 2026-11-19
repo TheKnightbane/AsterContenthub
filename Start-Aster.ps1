@@ -15,7 +15,16 @@ if (-not (Test-Path -LiteralPath 'node_modules')) { & npm.cmd ci; if ($LASTEXITC
 switch ($Mode) {
     'desktop' { & npm.cmd run desktop }
     'web' { & npm.cmd run dev }
-    'build' { & npm.cmd run desktop:build }
+    'build' {
+        $asterSigning = Join-Path $PSScriptRoot '../../work/signing'
+        if (Test-Path -LiteralPath (Join-Path $asterSigning 'aster-updater.key')) {
+            $env:TAURI_SIGNING_PRIVATE_KEY = [IO.Path]::GetFullPath((Join-Path $asterSigning 'aster-updater.key'))
+            $asterSecret = Import-Clixml -LiteralPath (Join-Path $asterSigning 'updater-password.xml')
+            $env:TAURI_SIGNING_PRIVATE_KEY_PASSWORD = ([pscredential]::new('aster', $asterSecret)).GetNetworkCredential().Password
+            try { & npm.cmd run desktop:build } finally { Remove-Item Env:TAURI_SIGNING_PRIVATE_KEY,Env:TAURI_SIGNING_PRIVATE_KEY_PASSWORD -ErrorAction SilentlyContinue }
+        } elseif ($env:TAURI_SIGNING_PRIVATE_KEY) { & npm.cmd run desktop:build }
+        else { & npm.cmd run desktop:build -- --config src-tauri/tauri.unsigned.conf.json }
+    }
     'test' { & npm.cmd test }
 }
 exit $LASTEXITCODE

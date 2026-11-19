@@ -5,6 +5,7 @@ mod player;
 mod surface;
 mod integrations;
 mod profile_sessions;
+mod updates;
 
 #[tauri::command]
 async fn addon_get(url: String) -> Result<serde_json::Value, String> {
@@ -36,10 +37,19 @@ fn app_set_theme(window: tauri::WebviewWindow, accent: String) -> Result<(), Str
     Ok(())
 }
 
+#[tauri::command]
+fn app_update_supported() -> bool {
+    !cfg!(debug_assertions) && std::env::current_exe().ok().and_then(|p| p.parent().map(|p| p.join("uninstall.exe").is_file())).unwrap_or(false)
+}
+#[tauri::command]
+fn app_prepare_update(state: tauri::State<'_, player::PlayerState>) -> Result<(), String> { player::prepare_update(&state) }
+
 fn main() {
     tauri::Builder::default()
+        .plugin(tauri_plugin_updater::Builder::new().build())
+        .plugin(tauri_plugin_process::init())
         .manage(player::PlayerState::default())
-        .invoke_handler(tauri::generate_handler![addon_get, profile_sessions::profile_session_get, profile_sessions::profile_session_set, profile_sessions::profile_session_remove, debrid::rd_connect, debrid::rd_request, debrid::rd_disconnect, debrid::rd_open_token_page, player::mpv_available, player::mpv_play, player::mpv_resize, player::mpv_control, player::mpv_stop, player::mpv_fullscreen, integrations::integration_connections, integrations::integration_connect, integrations::integration_check, integrations::integration_disconnect, integrations::integration_browse, integrations::integration_play, integrations::integration_resolve, integrations::integration_tracking, integrations::integration_watched, integrations::oauth::integration_auth_begin, integrations::oauth::integration_auth_poll, integrations::oauth::integration_auth_cancel, integrations::integration_open_url, app_set_theme])
+        .invoke_handler(tauri::generate_handler![app_update_supported, app_prepare_update, addon_get, profile_sessions::profile_session_get, profile_sessions::profile_session_set, profile_sessions::profile_session_remove, debrid::rd_connect, debrid::rd_request, debrid::rd_disconnect, debrid::rd_open_token_page, player::mpv_available, player::mpv_play, player::mpv_resize, player::mpv_control, player::mpv_stop, player::mpv_fullscreen, integrations::integration_connections, integrations::integration_connect, integrations::integration_check, integrations::integration_disconnect, integrations::integration_browse, integrations::integration_play, integrations::integration_resolve, integrations::integration_tracking, integrations::integration_watched, integrations::oauth::integration_auth_begin, integrations::oauth::integration_auth_poll, integrations::oauth::integration_auth_cancel, integrations::integration_open_url, app_set_theme])
         .on_window_event(|window, event| { if matches!(event, tauri::WindowEvent::Destroyed) { player::shutdown(&window.state::<player::PlayerState>()); } })
         .run(tauri::generate_context!())
         .expect("Could not start Aster Content Hub");
