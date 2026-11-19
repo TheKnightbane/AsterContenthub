@@ -91,3 +91,31 @@ test('search cards also play trailers and leaving the page stops them', async ({
   await page.locator('.sidebar').getByRole('button', { name: 'Home', exact: true }).click();
   await expect(page.locator('.hover-trailer')).toHaveCount(0);
 });
+
+test('compact cards expand to a valid YouTube player instead of silently skipping previews', async ({ page }) => {
+  await page.route('https://www.youtube-nocookie.com/**', route => route.fulfill({ contentType: 'text/html', body: '<html>Trailer fixture</html>' }));
+  await catalog(page, { ytId: 'P6AaSMfXHbA' });
+  await page.setViewportSize({width:1152,height:768});
+  await page.locator('.landscape-card').first().hover();
+  const iframe=page.locator('.hover-trailer-floating iframe');
+  await expect(iframe).toBeAttached();
+  const box=await iframe.boundingBox();
+  expect(box!.width).toBeGreaterThanOrEqual(200);
+  expect(box!.height).toBeGreaterThanOrEqual(200);
+  expect(box!.x).toBeGreaterThanOrEqual(0);
+  expect(box!.x+box!.width).toBeLessThanOrEqual(1152);
+  await page.mouse.move(1100,10);
+  await expect(iframe).toHaveCount(0);
+});
+
+test('a collection update does not discard an active hover preview', async ({ page }) => {
+  await catalog(page);
+  await page.locator('.sidebar').getByRole('button',{name:'Search',exact:true}).click();
+  const card=page.locator('.media-grid .card').first();
+  await card.hover();
+  const video=card.locator('video');
+  await expect.poll(()=>video.evaluate(v=>v.currentTime)).toBeGreaterThan(0);
+  await video.evaluate(v=>v.dataset.previewIdentity='same-player');
+  await card.getByRole('button',{name:'Favorite Trailer movie 0',exact:true}).click();
+  await expect(video).toHaveAttribute('data-preview-identity','same-player');
+});

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import type { InstalledAddon, Media } from '../shared/models';
 import { loadTrailer, type Trailer } from './trailers';
 
@@ -7,6 +8,7 @@ export default function HoverTrailer({ media, addons }: { media: Media; addons: 
   const host = useRef<HTMLSpanElement>(null);
   const frame = useRef<HTMLIFrameElement>(null);
   const [trailer, setTrailer] = useState<Trailer>();
+  const [floating, setFloating] = useState<{ left: number; top: number; width: number; height: number }>();
   const [playing, setPlaying] = useState(false);
   const [stopped, setStopped] = useState(false);
   useEffect(() => {
@@ -16,7 +18,17 @@ export default function HoverTrailer({ media, addons }: { media: Media; addons: 
     const timer = window.setTimeout(async () => {
       if (blocked()) return;
       const next = await loadTrailer(addons, media);
-      if (alive && !blocked() && (next?.kind !== 'youtube' || (host.current && host.current.clientWidth >= 200 && host.current.clientHeight >= 200))) setTrailer(next);
+      if (!alive || blocked()) return;
+      const rect = host.current?.getBoundingClientRect();
+      if (next?.kind === 'youtube' && rect && (rect.width < 200 || rect.height < 200)) {
+        // YouTube requires a 200px minimum player. Compact/scaled cards get an
+        // unclipped preview above the rail rather than silently losing trailers.
+        const width = Math.min(Math.max(356, rect.width), innerWidth - 16);
+        const height = Math.max(200, width * 9 / 16);
+        if (width < 200 || innerHeight < height + 16) return;
+        setFloating({ width, height, left: Math.max(8, Math.min(innerWidth - width - 8, rect.left + (rect.width - width) / 2)), top: Math.max(8, Math.min(innerHeight - height - 8, rect.top + (rect.height - height) / 2)) });
+      }
+      setTrailer(next);
     }, 900);
     const observer = new IntersectionObserver(entries => {
       if (!entries[0]?.isIntersecting) setStopped(true);
@@ -53,9 +65,13 @@ export default function HoverTrailer({ media, addons }: { media: Media; addons: 
     send({ event: 'listening', id: media.id });
     for (const name of ['onStateChange', 'onError']) send({ event: 'command', func: 'addEventListener', args: [name] });
   };
-  return <span ref={host} className={`hover-trailer ${playing && !stopped ? 'is-playing' : ''}`} aria-hidden="true">
+  const content = <>
     {!stopped && trailer?.kind === 'video' && <video src={trailer.url} autoPlay muted playsInline onPlaying={() => setPlaying(true)} onEnded={() => setStopped(true)} onError={() => setStopped(true)} />}
     {!stopped && trailer?.kind === 'youtube' && <iframe ref={frame} title={`${media.title} trailer`} tabIndex={-1} referrerPolicy="strict-origin-when-cross-origin" allow="autoplay; encrypted-media" onLoad={subscribe} src={`https://www.youtube-nocookie.com/embed/${trailer.id}?autoplay=1&mute=1&controls=0&playsinline=1&rel=0&enablejsapi=1&origin=${encodeURIComponent(location.origin)}`} />}
     {playing && !stopped && trailer?.kind === 'video' && <span className="trailer-label">Trailer · Muted</span>}
+  </>;
+  const visible = playing && !stopped ? 'is-playing' : '';
+  return <span ref={host} className={`hover-trailer ${visible} ${floating ? 'has-floating' : ''}`} aria-hidden="true">
+    {floating ? createPortal(<span className={`hover-trailer hover-trailer-floating ${visible}`} style={floating} aria-hidden="true">{content}</span>, document.body) : content}
   </span>;
 }

@@ -1,0 +1,53 @@
+/** Opt-in real Windows WebView trailer check. Uses a fresh WebView folder and test profile. */
+import { chromium } from '@playwright/test';
+import { spawn } from 'node:child_process';
+import { mkdtempSync, existsSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { resolve, join } from 'node:path';
+import assert from 'node:assert/strict';
+import { createServer } from 'node:net';
+const exe=resolve('src-tauri/target/release/aster-content-hub.exe');
+assert(existsSync(exe),'Build the Windows application first.');
+const reservation=createServer();
+await new Promise(r=>reservation.listen(0,'127.0.0.1',r));
+const port=reservation.address().port;
+await new Promise(r=>reservation.close(r));
+const directory=mkdtempSync(join(tmpdir(),'aster-trailer-test-'));
+const child=spawn(exe,[],{windowsHide:true,stdio:'ignore',env:{...process.env,WEBVIEW2_USER_DATA_FOLDER:directory,WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS:`--remote-debugging-port=${port}`}});
+let browser;
+try {
+  for(let attempt=0;attempt<40;attempt++){
+    try{browser=await chromium.connectOverCDP(`http://127.0.0.1:${port}`);break;}catch{await new Promise(r=>setTimeout(r,500));}
+  }
+  assert(browser,'The isolated WebView debugging endpoint did not start.');
+  const page=browser.contexts()[0].pages().find(p=>p.url().includes('tauri.localhost'));
+  assert(page,'Packaged Tauri page not found.');
+  await page.evaluate(()=>{
+    const id='22222222-2222-4222-8222-222222222222';
+    localStorage.setItem('aster.profiles.v1',JSON.stringify([{id,name:'Native trailer test'}]));
+    localStorage.setItem('aster.active-profile.v1',id);
+    localStorage.setItem('aster.setup.v1',JSON.stringify({version:1,status:'complete',step:3}));
+    localStorage.setItem(`aster.settings.v1:profile:${id}`,JSON.stringify({showSpotlight:false,collections:[{id:'trailers',name:'Trailer diagnostics',mediaIds:['tt0241527']}]}));
+    localStorage.setItem(`aster.state.v1:profile:${id}`,JSON.stringify({version:1,seeded:true,items:{tt0241527:{media:{id:'tt0241527',type:'movie',title:'Harry Potter',year:2001,genre:'Fantasy',duration:'Movie',description:'Trailer test',art:'/art/forest.jpg',accent:'#18232d',source:'Cinemeta'},inLibrary:true,favorite:false,updatedAt:new Date().toISOString()}},addons:[{url:'https://v3-cinemeta.strem.io/manifest.json',manifest:{id:'cinemeta',name:'Cinemeta',version:'1',description:'Metadata',resources:['meta'],types:['movie','series'],catalogs:[]}}]}));
+  });
+  await page.reload();
+  for(const width of [1152,1920]){
+    await page.setViewportSize({width,height:900});
+    await page.locator('.cinema-shelf-heading').hover();
+    const card=page.locator('.landscape-art').first();
+    const box=await card.boundingBox();
+    await page.locator('.landscape-card').first().hover({position:{x:20,y:20}});
+    const preview=page.locator(width===1152?'.hover-trailer-floating.is-playing':'.landscape-art>.hover-trailer.is-playing');
+    await preview.waitFor({state:'visible',timeout:35000});
+    const frame=page.frames().find(f=>f.url().startsWith('https://www.youtube-nocookie.com/embed/'));
+    assert(frame,'YouTube frame missing.');
+    await frame.waitForFunction(()=>{const v=document.querySelector('video');return v&&!v.paused&&v.currentTime>1;},null,{timeout:15000});
+    assert(await frame.locator('video').evaluate(v=>v.muted),'Trailer must be muted.');
+    console.log(`Packaged WebView: ${width}px window, ${Math.round(box.height)}px card, muted trailer playing (${width===1152?'expanded':'inline'}).`);
+    await page.locator('.cinema-shelf-heading').hover();
+    await page.locator('iframe').waitFor({state:'detached'});
+  }
+} finally {
+  await browser?.close();
+  child.kill();
+}

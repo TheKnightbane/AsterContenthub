@@ -94,3 +94,5 @@
 @media(prefers-reduced-motion:reduce){.hover-trailer{transition:none}}
 .card-art:has(.hover-trailer.is-playing)>.card-tag,.card-art:has(.hover-trailer.is-playing)>.art-title,.card-art:has(.hover-trailer.is-playing)>.card-play{opacity:0}
 .landscape-card:has(.hover-trailer.is-playing) .landscape-play,.landscape-card:has(.hover-trailer.is-playing) .landscape-quickplay,.landscape-card:has(.hover-trailer.is-playing) .landscape-favorite{opacity:0;pointer-events:none}
+.hover-trailer.has-floating{background:transparent}
+.hover-trailer-floating{position:fixed;inset:auto;z-index:8;overflow:hidden;border-radius:8px;box-shadow:0 12px 45px #000b;outline:1px solid var(--theme-border)}

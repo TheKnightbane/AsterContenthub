@@ -1,12 +1,12 @@
 # Aster Content Hub — Windows alpha
 
-A desktop content hub built with Tauri, React, TypeScript and Vite. **0.1.0-alpha.5** is an early testing release.
+A desktop content hub built with Tauri, React, TypeScript and Vite. **0.1.0-alpha.6** is an early testing release.
 
-[Download the Windows alpha](https://github.com/TheKnightbane/AsterContenthub/releases/tag/v0.1.0-alpha.5) · [Report an issue](https://github.com/TheKnightbane/AsterContenthub/issues)
+[Download the Windows alpha](https://github.com/TheKnightbane/AsterContenthub/releases/tag/v0.1.0-alpha.6) · [Report an issue](https://github.com/TheKnightbane/AsterContenthub/issues)
 
 ## Install and preview
 
-Download **AsterContentHub-Setup-0.1.0-alpha.5-x64.exe** from the release page. Windows x64 and Microsoft WebView2 are required. The installer can install WebView2 when needed. This is an unsigned development build; Windows may display an unknown-publisher warning.
+Download **AsterContentHub-Setup-0.1.0-alpha.6-x64.exe** from the release page. Windows x64 and Microsoft WebView2 are required. The installer can install WebView2 when needed. This is an unsigned development build; Windows may display an unknown-publisher warning.
 
 No account, email, API key or Supabase credentials are required to open the app. Your existing Aster library and device credentials are preserved. Automatic updates are included. Alpha 1/2 users need to install this version once; later signed releases download automatically. Updates install after a minute of inactivity, with a Later option. Playback, open dialogs and editing postpone installation. Settings → About includes Check for updates and an Automatic updates switch. Portable/development previews use manual installation.
 
@@ -114,7 +114,7 @@ The Windows package includes the unmodified official mpv 0.42.0 x64 player and V
 
 Release builds use Tauri updater signatures, which are separate from Windows Authenticode publisher certificates. The initial Windows installer is still unsigned for SmartScreen. The public verification key is bundled with Aster. The encrypted private key is kept outside this repository and in GitHub Actions secrets; never commit it or replace it casually. Keep a secure offline backup because existing installations trust this key.
 
-Bump `package.json`, `package-lock.json`, `src-tauri/Cargo.toml`, `src-tauri/tauri.conf.json`, the About version and release notes together. Commit, then push a matching tag, for example `git tag v0.1.0-alpha.5` followed by `git push origin main v0.1.0-alpha.5`. The **Publish signed Windows update** workflow tests, builds and signs the installer, publishes the versioned release and advances `updater/latest.json`. It also supports Run workflow on GitHub. An ordinary source commit or unsigned uploaded EXE does not become an update. Older release jobs cannot roll the update feed backwards.
+Bump `package.json`, `package-lock.json`, `src-tauri/Cargo.toml`, `src-tauri/tauri.conf.json`, the About version and release notes together. Commit, then push a matching tag, for example `git tag v0.1.0-alpha.6` followed by `git push origin main v0.1.0-alpha.6`. The **Publish signed Windows update** workflow tests, builds and signs the installer, publishes the versioned release and advances `updater/latest.json`. It also supports Run workflow on GitHub. An ordinary source commit or unsigned uploaded EXE does not become an update. Older release jobs cannot roll the update feed backwards.
 
 Required Actions secrets: `TAURI_SIGNING_PRIVATE_KEY` and `TAURI_SIGNING_PRIVATE_KEY_PASSWORD`. Public backend config uses the repository variables documented above. `Windows alpha checks` deliberately builds without release-signing secrets, including for pull requests.
 
@@ -124,4 +124,6 @@ Fork maintainers must configure their own app identifier, signing public key, re
 
 ### Hover trailers
 
-Hover over a movie or series card for a moment to play a muted trailer. Your installed metadata addon must supply one; Cinemeta is supported. Move away to stop. Turn previews off in Settings → Home & display → Play trailers on hover. Reduced motion disables automatic previews. Missing, blocked or non-embeddable trailers keep the artwork. YouTube previews use its privacy-enhanced embedded player and require internet access; small cards below the player minimum size keep artwork. Metadata compatibility follows the [Stremio meta contract](https://stremio.github.io/stremio-addon-sdk/api/responses/meta.html) and embeds use the [YouTube player API](https://developers.google.com/youtube/iframe_api_reference).
+Hover over a movie or series card for a moment to play a muted trailer. Your installed metadata addon must supply one; Cinemeta is supported. Move away to stop. Turn previews off in Settings → Home & display → Play trailers on hover. Reduced motion disables automatic previews. Missing, blocked or non-embeddable trailers keep the artwork. YouTube previews use its privacy-enhanced embedded player and require internet access; small cards expand a hover preview to meet the player minimum size. Metadata compatibility follows the [Stremio meta contract](https://stremio.github.io/stremio-addon-sdk/api/responses/meta.html) and embeds use the [YouTube player API](https://developers.google.com/youtube/iframe_api_reference).
+
+To verify real YouTube playback in the packaged Windows WebView, build the desktop app and run `node scripts/check-native-trailers.mjs`. This opt-in check requires internet, opens an isolated diagnostic copy, uses a fresh test profile/WebView folder, checks scaled and large cards, then closes its own process. It does not use your library.
