@@ -295,8 +295,15 @@ mod tests {
         let mut args = launch_args(&source.to_string_lossy(), "Control smoke test", 0.0, "en", "en", "off", &script).unwrap();
         args.splice(args.len()-2..args.len()-2, ["--vo=null".into(), "--ao=null".into(), "--force-window=no".into(), "--pause=yes".into(), format!("--input-ipc-server={pipe}")]);
         let mut child = Command::new(exe).args(args).stdout(Stdio::piped()).stderr(Stdio::null()).spawn().unwrap();
-        std::thread::sleep(std::time::Duration::from_millis(600));
         let result = tauri::async_runtime::block_on(async {
+            // Hosted runners can take longer to demux the fixture. Wait for an
+            // actual playback position rather than assuming it loads in 600 ms.
+            let deadline = std::time::Instant::now() + std::time::Duration::from_secs(10);
+            loop {
+                if send_command(&pipe, json!(["get_property", "time-pos"]), true).await.is_ok() { break; }
+                if std::time::Instant::now() >= deadline { return Err("The bundled player did not finish loading the test video.".to_string()); }
+                tokio::time::sleep(std::time::Duration::from_millis(50)).await;
+            }
             for (action, value) in [("volume", json!(25)), ("audio", json!(1)), ("subtitles", json!("no")), ("seek", json!(2)), ("pause", Value::Null)] { send_command(&pipe, control_command(action, &value)?, true).await?; }
             send_command(&pipe, json!(["keypress", "RIGHT"]), true).await?;
             send_command(&pipe, json!(["keypress", "DOWN"]), true).await?;
