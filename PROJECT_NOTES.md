@@ -16,3 +16,7 @@
 - Owner also requested automatic Home suggestion rotation: eight-second interval, paused for hover/focus, dialogs, offscreen/hidden Home and card previews; disabled with reduced motion or its own setting. Preserve this together with banner autoplay.
 
 - Final Alpha 7 validation: 38 unit tests and 69 browser checks passed (two optional live checks skipped). Packaged Windows WebView confirmed The Odyssey card playback at 1152/1920 widths and banner autoplay without hover; opening details removes the iframe. Signed installer verification/tamper rejection passed.
+
+- **Alpha 8 preview reliability:** Replace the one-shot manual YouTube postMessage subscription with the official iframe player API and onReady handshake. Player instances are destroyed on leave; a progress watchdog retries stalls and advances failed sources once. Remove the permanent 45-second finished flag: previews loop while hovered. Native soak check is opt-in with ASTER_TRAILER_SOAK=1. Do not automate the owner's app UI or restart it merely to test; use isolated native diagnostic copies.
+
+- Alpha 8 verified: 72 browser checks + 38 unit tests passed; live YouTube browser playback passed. Packaged Windows WebView completed four consecutive preview starts at 1152/1920 widths, observed The Odyssey looping and continuing beyond 45 seconds, and confirmed banner autoplay/stop on details. Installer signature/tamper check passed. No owner-app UI control or restarts used for this verification.

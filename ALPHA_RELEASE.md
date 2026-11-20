@@ -1,18 +1,16 @@
-# Aster Content Hub 0.1.0-alpha.7
+# Aster Content Hub 0.1.0-alpha.8
 
-Windows alpha update: automatic Home banner trailers and more reliable card previews.
+Windows alpha fix: reliable, repeatable trailer previews.
 
-- Home suggestions rotate every eight seconds, pausing while the pointer or keyboard focus is on the banner.
-- Featured Home titles automatically play a muted trailer after a short pause, keeping the title and Play button accessible.
-- Banner previews yield while you browse cards and stop during movie playback, dialogs or navigation away from Home.
-- Card previews recover when scrolling settles, instead of remaining cancelled until you leave the card.
-- Removed/blocked trailers try the next provider video; loading and unavailable messages make preview status clear.
-- Separate banner autoplay and card-hover switches in Settings → Home & display; reduced motion disables automatic previews.
-- Includes compact-card preview sizing, fullscreen layout fixes, bundled mpv and signed updates.
+- Uses YouTube's supported player API and readiness events, replacing a fragile one-shot message subscription.
+- Repeated hover starts create and clean up separate player instances correctly.
+- Previews loop while hovered instead of stopping permanently after 45 seconds.
+- Detects stalled playback, retries play, and falls back to another trailer if needed. Duplicate error/timeout notifications no longer skip extra sources.
+- Keeps rotating Home banners, muted banner autoplay, compact-card sizing and scroll recovery.
 
 ## Download
 
-Use **AsterContentHub-Setup-0.1.0-alpha.7-x64.exe**. Alpha 3–6 installations can receive this through automatic updates. Alpha 1/2 users need to install a current setup build once to enable the updater. Windows x64 and WebView2 are required; mpv is included. Saved libraries and settings are preserved.
+Use **AsterContentHub-Setup-0.1.0-alpha.8-x64.exe**. Alpha 3–7 installations can receive this through automatic updates. Windows x64 and WebView2 are required; mpv is included. Your library and settings are preserved.
 
 The installer is unsigned for Windows publisher/SmartScreen checks. Tauri update signatures verify installer authenticity and release version separately.
 

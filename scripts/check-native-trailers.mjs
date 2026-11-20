@@ -31,7 +31,7 @@ try {
     localStorage.setItem(`aster.state.v1:profile:${id}`,JSON.stringify({version:1,seeded:true,items:{[testId]:{media:{id:testId,type:'movie',title:testTitle,year:2001,genre:'Fantasy',duration:'Movie',description:'Trailer test',art:'/art/forest.jpg',accent:'#18232d',source:'Cinemeta'},inLibrary:true,favorite:false,updatedAt:new Date().toISOString()}},addons:[{url:'https://v3-cinemeta.strem.io/manifest.json',manifest:{id:'cinemeta',name:'Cinemeta',version:'1',description:'Metadata',resources:['meta'],types:['movie','series'],catalogs:[]}}]}));
   },{testId:process.env.ASTER_TRAILER_TEST_ID||'tt0241527',testTitle:process.env.ASTER_TRAILER_TEST_TITLE||'Harry Potter'});
   await page.reload();
-  for(const width of [1152,1920]){
+  for(const [iteration,width] of [1152,1920,1152,1920].entries()){
     await page.setViewportSize({width,height:900});
     await page.locator('.cinema-shelf-heading').hover();
     const card=page.locator('.landscape-art').first();
@@ -44,6 +44,12 @@ try {
     await frame.waitForFunction(()=>{const v=document.querySelector('video');return v&&!v.paused&&v.currentTime>1;},null,{timeout:15000});
     assert(await frame.locator('video').evaluate(v=>v.muted),'Trailer must be muted.');
     console.log(`Packaged WebView: ${width}px window, ${Math.round(box.height)}px card, muted trailer playing (${width===1152?'expanded':'inline'}).`);
+    if(process.env.ASTER_TRAILER_SOAK==='1'&&iteration===3){
+      console.log('Checking continuous playback beyond the old 45-second stop…');
+      await frame.waitForFunction(()=>document.querySelector('video')?.currentTime>40,null,{timeout:50000});
+      await frame.waitForFunction(()=>{const v=document.querySelector('video');return v&&!v.paused&&v.currentTime<5;},null,{timeout:15000});
+      console.log('Continuous preview verified: clip looped and kept playing after 45 seconds.');
+    }
     await page.locator('.cinema-shelf-heading').hover();
     await page.locator('iframe').waitFor({state:'detached'});
   }

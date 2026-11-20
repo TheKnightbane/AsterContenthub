@@ -105,3 +105,4 @@
 .cinema-pagination{z-index:2}
 .banner-trailer .trailer-picture video{object-fit:cover}
 @media(prefers-reduced-motion:reduce){.trailer-picture{transition:none}}
+.trailer-youtube{position:absolute;inset:0;display:block}

@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { mockYouTubeApi } from './youtube-fixture';
 
 async function catalog(page: import('@playwright/test').Page, trailer: unknown = { url: 'https://trailers.aster.test/trailer.mp4' }, banner = false) {
   await page.setViewportSize({ width: 1920, height: 1080 });
@@ -43,12 +44,13 @@ test('hover waits, plays a muted trailer, stops on leave and reuses cached metad
 });
 
 test('YouTube embeds are constrained to the approved host and disappear on errors', async ({ page }) => {
+  await mockYouTubeApi(page);
   await page.route('https://www.youtube-nocookie.com/**', route => route.fulfill({ contentType: 'text/html', body: '<html>Trailer fixture</html>' }));
   await catalog(page, { source: 'P6AaSMfXHbA', type: 'Trailer' });
   const card = page.locator('.landscape-card').first();
   await card.hover();
   const iframe = card.locator('iframe');
-  await expect(iframe).toHaveAttribute('src', /youtube-nocookie\.com\/embed\/P6AaSMfXHbA\?autoplay=1&mute=1/);
+  await expect(iframe).toHaveAttribute('src', /youtube-nocookie\.com\/embed\/P6AaSMfXHbA\?/);
   await iframe.evaluate(el => window.dispatchEvent(new MessageEvent('message', { source: el.contentWindow!, origin: 'https://www.youtube-nocookie.com', data: JSON.stringify({ event: 'onError', info: 150 }) })));
   await expect(iframe).toHaveCount(0);
   await expect(card.locator('.landscape-art')).toBeVisible();
@@ -94,6 +96,7 @@ test('search cards also play trailers and leaving the page stops them', async ({
 });
 
 test('compact cards expand to a valid YouTube player instead of silently skipping previews', async ({ page }) => {
+  await mockYouTubeApi(page);
   await page.route('https://www.youtube-nocookie.com/**', route => route.fulfill({ contentType: 'text/html', body: '<html>Trailer fixture</html>' }));
   await catalog(page, { ytId: 'P6AaSMfXHbA' });
   await page.setViewportSize({width:1152,height:768});
@@ -154,6 +157,7 @@ test('scrolling settles and the hovered card recovers automatically', async ({pa
 });
 
 test('an unavailable YouTube trailer tries the next provider video', async ({page})=>{
+  await mockYouTubeApi(page);
   await page.route('https://www.youtube-nocookie.com/**',r=>r.fulfill({contentType:'text/html',body:'<html>Fixture</html>'}));
   await catalog(page);
   await page.route('https://trailers.aster.test/meta/**',r=>r.fulfill({json:{meta:{trailerStreams:[{ytId:'P6AaSMfXHbA'},{ytId:'M7lc1UVf-VE'}]}}}));
@@ -177,4 +181,44 @@ test('featured banners rotate automatically and pause while the banner is hovere
   await page.mouse.move(10,10);
   await page.clock.fastForward(8100);
   await expect(page.getByRole('heading',{name:'Trailer movie 0',exact:true})).toBeVisible();
+});
+
+test('delayed YouTube readiness and repeated card hovers keep working',async({page})=>{
+  await mockYouTubeApi(page,1500);
+  await page.route('https://www.youtube-nocookie.com/**',r=>r.fulfill({contentType:'text/html',body:'<html>Fixture</html>'}));
+  await catalog(page,{ytId:'P6AaSMfXHbA'});
+  const card=page.locator('.landscape-card').first();
+  for(let i=0;i<3;i++){
+    await card.hover();
+    await expect(card.locator('iframe')).toBeAttached();
+    await expect(card.locator('.hover-trailer.is-playing')).toBeVisible();
+    await page.mouse.move(1800,20);
+    await expect(page.locator('iframe')).toHaveCount(0);
+  }
+  expect(await page.evaluate(()=>{const w=window as unknown as {__ytMockPlayers:{destroyed:boolean}[]};return w.__ytMockPlayers.every(p=>p.destroyed);})).toBe(true);
+});
+
+test('previews loop instead of becoming permanently finished after 45 seconds',async({page})=>{
+  await page.clock.install();
+  await mockYouTubeApi(page);
+  await page.route('https://www.youtube-nocookie.com/**',r=>r.fulfill({contentType:'text/html',body:'<html>Fixture</html>'}));
+  await catalog(page,{ytId:'P6AaSMfXHbA'});
+  await page.locator('.landscape-card').first().hover();
+  await expect(page.locator('.landscape-card .is-playing')).toBeVisible();
+  await page.clock.fastForward(46000);
+  await expect(page.locator('.landscape-card iframe')).toBeAttached();
+  expect(await page.evaluate(()=>{const w=window as unknown as {__ytMockPlayers:{seekCalls:number}[]};return w.__ytMockPlayers.at(-1)!.seekCalls;})).toBeGreaterThan(0);
+});
+
+test('stalled playback retries and advances to another trailer instead of staying frozen',async({page})=>{
+  await page.clock.install();
+  await mockYouTubeApi(page);
+  await page.route('https://www.youtube-nocookie.com/**',r=>r.fulfill({contentType:'text/html',body:'<html>Fixture</html>'}));
+  await catalog(page);
+  await page.route('https://trailers.aster.test/meta/**',r=>r.fulfill({json:{meta:{trailerStreams:[{ytId:'P6AaSMfXHbA'},{ytId:'M7lc1UVf-VE'}]}}}));
+  await page.locator('.landscape-card').first().hover();
+  await expect(page.locator('.landscape-card .is-playing')).toBeVisible();
+  await page.evaluate(()=>{const w=window as unknown as {__ytMockPlayers:{getCurrentTime:()=>number}[]};w.__ytMockPlayers[0].getCurrentTime=()=>0;});
+  await page.clock.runFor(18000);
+  await expect(page.locator('.landscape-card iframe')).toHaveAttribute('src',/M7lc1UVf-VE/);
 });
