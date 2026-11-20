@@ -22,14 +22,14 @@ try {
   assert(browser,'The isolated WebView debugging endpoint did not start.');
   const page=browser.contexts()[0].pages().find(p=>p.url().includes('tauri.localhost'));
   assert(page,'Packaged Tauri page not found.');
-  await page.evaluate(()=>{
+  await page.evaluate(({testId,testTitle})=>{
     const id='22222222-2222-4222-8222-222222222222';
     localStorage.setItem('aster.profiles.v1',JSON.stringify([{id,name:'Native trailer test'}]));
     localStorage.setItem('aster.active-profile.v1',id);
     localStorage.setItem('aster.setup.v1',JSON.stringify({version:1,status:'complete',step:3}));
-    localStorage.setItem(`aster.settings.v1:profile:${id}`,JSON.stringify({showSpotlight:false,collections:[{id:'trailers',name:'Trailer diagnostics',mediaIds:['tt0241527']}]}));
-    localStorage.setItem(`aster.state.v1:profile:${id}`,JSON.stringify({version:1,seeded:true,items:{tt0241527:{media:{id:'tt0241527',type:'movie',title:'Harry Potter',year:2001,genre:'Fantasy',duration:'Movie',description:'Trailer test',art:'/art/forest.jpg',accent:'#18232d',source:'Cinemeta'},inLibrary:true,favorite:false,updatedAt:new Date().toISOString()}},addons:[{url:'https://v3-cinemeta.strem.io/manifest.json',manifest:{id:'cinemeta',name:'Cinemeta',version:'1',description:'Metadata',resources:['meta'],types:['movie','series'],catalogs:[]}}]}));
-  });
+    localStorage.setItem(`aster.settings.v1:profile:${id}`,JSON.stringify({showSpotlight:false,collections:[{id:'trailers',name:'Trailer diagnostics',mediaIds:[testId]}]}));
+    localStorage.setItem(`aster.state.v1:profile:${id}`,JSON.stringify({version:1,seeded:true,items:{[testId]:{media:{id:testId,type:'movie',title:testTitle,year:2001,genre:'Fantasy',duration:'Movie',description:'Trailer test',art:'/art/forest.jpg',accent:'#18232d',source:'Cinemeta'},inLibrary:true,favorite:false,updatedAt:new Date().toISOString()}},addons:[{url:'https://v3-cinemeta.strem.io/manifest.json',manifest:{id:'cinemeta',name:'Cinemeta',version:'1',description:'Metadata',resources:['meta'],types:['movie','series'],catalogs:[]}}]}));
+  },{testId:process.env.ASTER_TRAILER_TEST_ID||'tt0241527',testTitle:process.env.ASTER_TRAILER_TEST_TITLE||'Harry Potter'});
   await page.reload();
   for(const width of [1152,1920]){
     await page.setViewportSize({width,height:900});
@@ -47,6 +47,15 @@ try {
     await page.locator('.cinema-shelf-heading').hover();
     await page.locator('iframe').waitFor({state:'detached'});
   }
+  await page.evaluate(() => { const key='aster.settings.v1:profile:22222222-2222-4222-8222-222222222222'; const value=JSON.parse(localStorage.getItem(key)); localStorage.setItem(key,JSON.stringify({...value,showSpotlight:true})); });
+  await page.reload();
+  await page.locator('.cinema-hero .banner-trailer.is-playing').waitFor({state:'visible',timeout:35000});
+  const bannerFrame=page.frames().find(f=>f.url().startsWith('https://www.youtube-nocookie.com/embed/'));
+  await bannerFrame.waitForFunction(()=>{const v=document.querySelector('video');return v&&!v.paused&&v.currentTime>1;},null,{timeout:15000});
+  assert(await bannerFrame.locator('video').evaluate(v=>v.muted));
+  await page.getByRole('button',{name:'View details',exact:true}).click();
+  await page.locator('.banner-trailer iframe').waitFor({state:'detached'});
+  console.log('Packaged WebView: banner autoplays muted without hover; opening details stops it.');
 } finally {
   await browser?.close();
   child.kill();

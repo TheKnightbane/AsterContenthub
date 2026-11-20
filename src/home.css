@@ -96,3 +96,12 @@
 .landscape-card:has(.hover-trailer.is-playing) .landscape-play,.landscape-card:has(.hover-trailer.is-playing) .landscape-quickplay,.landscape-card:has(.hover-trailer.is-playing) .landscape-favorite{opacity:0;pointer-events:none}
 .hover-trailer.has-floating{background:transparent}
 .hover-trailer-floating{position:fixed;inset:auto;z-index:8;overflow:hidden;border-radius:8px;box-shadow:0 12px 45px #000b;outline:1px solid var(--theme-border)}
+.hover-trailer{opacity:1;background:transparent}
+.trailer-picture{position:absolute;inset:0;background:#000;opacity:0;transition:opacity .35s}
+.hover-trailer.is-playing>.trailer-picture{opacity:1}
+.trailer-status{position:absolute;top:12px;left:12px;background:#080e18db;color:#e9efea;border:1px solid var(--theme-border);border-radius:4px;font-size:10px;padding:5px 9px}
+.cinema-hero{overflow:hidden}
+.cinema-hero:has(.banner-trailer.is-playing)::after{content:'';position:absolute;inset:0;pointer-events:none;background:linear-gradient(0deg,var(--theme-bg),transparent 65%),linear-gradient(90deg,#080e18e0,transparent 80%)}
+.cinema-pagination{z-index:2}
+.banner-trailer .trailer-picture video{object-fit:cover}
+@media(prefers-reduced-motion:reduce){.trailer-picture{transition:none}}

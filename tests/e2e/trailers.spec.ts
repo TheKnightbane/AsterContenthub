@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-async function catalog(page: import('@playwright/test').Page, trailer: unknown = { url: 'https://trailers.aster.test/trailer.mp4' }) {
+async function catalog(page: import('@playwright/test').Page, trailer: unknown = { url: 'https://trailers.aster.test/trailer.mp4' }, banner = false) {
   await page.setViewportSize({ width: 1920, height: 1080 });
   let requests = 0;
   await page.route('https://trailers.aster.test/**', route => {
@@ -12,6 +12,7 @@ async function catalog(page: import('@playwright/test').Page, trailer: unknown =
     return route.fulfill({ json: { metas: [0, 1].map(i => ({ id: `trailer:${i}`, name: `Trailer movie ${i}`, background: '/art/forest.jpg' })) } });
   });
   await page.addInitScript(() => localStorage.setItem('aster.state.v1', JSON.stringify({ version: 1, seeded: true, items: {}, addons: [{ url: 'https://trailers.aster.test/manifest.json', manifest: { id: 'trailers', name: 'Trailers', version: '1', description: 'Fixture', resources: ['catalog', 'meta'], types: ['movie'], catalogs: [{ id: 'all', type: 'movie' }] } }] })));
+  await page.addInitScript(enabled => localStorage.setItem('aster.settings.v1', JSON.stringify({bannerTrailers:enabled,...JSON.parse(localStorage.getItem('aster.settings.v1')||'{}')})), banner);
   await page.goto('/');
   await expect(page.locator('.landscape-card')).toHaveCount(2);
   return () => requests;
@@ -118,4 +119,62 @@ test('a collection update does not discard an active hover preview', async ({ pa
   await video.evaluate(v=>v.dataset.previewIdentity='same-player');
   await card.getByRole('button',{name:'Favorite Trailer movie 0',exact:true}).click();
   await expect(video).toHaveAttribute('data-preview-identity','same-player');
+});
+
+test('Home banner autoplays without hover, switches titles and yields to card previews', async ({page})=>{
+  await catalog(page,undefined,true);
+  const banner=page.locator('.cinema-hero .banner-trailer');
+  await expect(banner.locator('video')).toBeAttached();
+  await expect.poll(()=>banner.locator('video').evaluate(v=>v.currentTime)).toBeGreaterThan(0);
+  expect(await banner.locator('video').evaluate(v=>v.muted)).toBe(true);
+  await expect(page.getByRole('button',{name:'Play',exact:true})).toBeVisible();
+  await expect(banner).toHaveClass(/is-playing/);
+  await expect.poll(()=>banner.locator('video').evaluate(v=>v.currentTime)).toBeGreaterThan(2);
+  await page.screenshot({path:'../aster-banner-trailer.png'});
+  await banner.locator('video').evaluate(v=>v.dataset.identity='old-banner');
+  await page.getByRole('button',{name:'Feature Trailer movie 1',exact:true}).click();
+  await expect(page.locator('video[data-identity="old-banner"]')).toHaveCount(0);
+  await expect(banner.locator('video')).toBeAttached();
+  await page.locator('.landscape-card').first().hover();
+  await expect(banner).toHaveCount(0);
+  await expect(page.locator('.landscape-card').first().locator('video')).toBeAttached();
+  await page.locator('.sidebar').getByRole('button',{name:'Search',exact:true}).click();
+  await expect(page.locator('video')).toHaveCount(0);
+});
+
+test('scrolling settles and the hovered card recovers automatically', async ({page})=>{
+  await catalog(page);
+  const card=page.locator('.landscape-card').first();
+  await card.hover();
+  await expect.poll(()=>card.locator('video').evaluate(v=>v.currentTime)).toBeGreaterThan(0);
+  await page.mouse.wheel(0,60);
+  await expect(card.locator('video')).toHaveCount(0);
+  await expect(card.locator('video')).toBeAttached();
+  await expect.poll(()=>card.locator('video').evaluate(v=>v.currentTime)).toBeGreaterThan(0);
+});
+
+test('an unavailable YouTube trailer tries the next provider video', async ({page})=>{
+  await page.route('https://www.youtube-nocookie.com/**',r=>r.fulfill({contentType:'text/html',body:'<html>Fixture</html>'}));
+  await catalog(page);
+  await page.route('https://trailers.aster.test/meta/**',r=>r.fulfill({json:{meta:{trailerStreams:[{ytId:'P6AaSMfXHbA'},{ytId:'M7lc1UVf-VE'}]}}}));
+  await page.locator('.landscape-card').first().hover();
+  const iframe=page.locator('.landscape-card iframe');
+  await expect(iframe).toHaveAttribute('src',/P6AaSMfXHbA/);
+  await iframe.evaluate(el=>window.dispatchEvent(new MessageEvent('message',{source:el.contentWindow!,origin:'https://www.youtube-nocookie.com',data:JSON.stringify({event:'onError',info:150})})));
+  await expect(iframe).toHaveAttribute('src',/M7lc1UVf-VE/);
+});
+
+test('featured banners rotate automatically and pause while the banner is hovered',async({page})=>{
+  await page.clock.install();
+  await catalog(page,undefined,false);
+  await page.mouse.move(10,10);
+  await expect(page.getByRole('heading',{name:'Trailer movie 0',exact:true})).toBeVisible();
+  await page.clock.fastForward(8100);
+  await expect(page.getByRole('heading',{name:'Trailer movie 1',exact:true})).toBeVisible();
+  await page.locator('.cinema-hero-copy').hover();
+  await page.clock.fastForward(17000);
+  await expect(page.getByRole('heading',{name:'Trailer movie 1',exact:true})).toBeVisible();
+  await page.mouse.move(10,10);
+  await page.clock.fastForward(8100);
+  await expect(page.getByRole('heading',{name:'Trailer movie 0',exact:true})).toBeVisible();
 });

@@ -1,4 +1,4 @@
-import { createContext, useContext, useId, useRef, useState } from 'react';
+import { createContext, useContext, useId, useRef, useState, useEffect } from 'react';
 import HoverTrailer from './HoverTrailer';
 import { Bookmark, Check, ChevronLeft, ChevronRight, Heart, Info, Play, Star } from 'lucide-react';
 import type { LocalState, Media } from '../shared/models';
@@ -33,9 +33,19 @@ function Shelf({ title, source, items, state, open, favorite, more, play, settin
 export default function Home({ media, state, open, play, favorite, library, continueWatching, addons, settings }: { media: Media[]; state: LocalState; open: (media: Media) => void; play: (media: Media) => void; favorite: (media: Media) => void; library: (media: Media) => void; continueWatching: () => void; addons: () => void; settings: AppSettings }) {
   const [slide, setSlide] = useState(0);
   const [activePreview, setActivePreview] = useState('');
+  const [heroHovered, setHeroHovered] = useState(false);
+  const [heroFocused, setHeroFocused] = useState(false);
+  const hero = useRef<HTMLElement>(null);
   const catalog = [...new Map(media.filter(m => settings.discovery === 'all' || m.type === settings.discovery).map(m => [m.id, m])).values()];
   const featured = (catalog.length ? catalog : Object.values(state.items).map(i => i.media)).slice(0, 6);
   const selected = featured[slide % featured.length];
+  useEffect(() => {
+    if (!settings.rotateSpotlight || !settings.showSpotlight || settings.reducedMotion || featured.length < 2 || heroHovered || heroFocused || activePreview) return;
+    const timer = setInterval(() => {
+      if (!document.hidden && !matchMedia('(prefers-reduced-motion: reduce)').matches && !document.querySelector('dialog[open], [role="dialog"], .embedded-player') && (hero.current?.getBoundingClientRect().bottom ?? 0) > 100) setSlide(value => (value + 1) % featured.length);
+    }, 8000);
+    return () => clearInterval(timer);
+  }, [slide, featured.length, heroHovered, heroFocused, activePreview, settings.rotateSpotlight, settings.showSpotlight, settings.reducedMotion]);
   const progress = Object.values(state.items).filter(i => i.progress && i.progress.position > 0 && i.progress.position / i.progress.duration < settings.watchedThreshold / 100).map(i => i.media);
   const groups = new Map<string, { title: string; source: string; items: Media[] }>();
   for (const item of media.filter(m => settings.discovery === 'all' || m.type === settings.discovery)) {
@@ -48,7 +58,8 @@ export default function Home({ media, state, open, play, favorite, library, cont
     if (!group.items.some(m => m.id === item.id)) group.items.push(item);
   }
   return <PreviewContext.Provider value={{ active: activePreview, activate: setActivePreview }}><div className="cinema-home">
-    {settings.showSpotlight && (selected ? <section className="cinema-hero" aria-label="Featured stories" style={{ backgroundImage: `linear-gradient(0deg,var(--theme-bg) 0%,transparent 60%),linear-gradient(90deg,#080e18b8,transparent 85%),${art(selected.art)}` }}>
+    {settings.showSpotlight && (selected ? <section ref={hero} onPointerEnter={() => setHeroHovered(true)} onPointerLeave={() => setHeroHovered(false)} onFocusCapture={() => setHeroFocused(true)} onBlurCapture={e => { if (!e.currentTarget.contains(e.relatedTarget)) setHeroFocused(false); }} className="cinema-hero" aria-label="Featured stories" style={{ backgroundImage: `linear-gradient(0deg,var(--theme-bg) 0%,transparent 60%),linear-gradient(90deg,#080e18b8,transparent 85%),${art(selected.art)}` }}>
+      {settings.bannerTrailers && !settings.reducedMotion && !activePreview && <HoverTrailer key={selected.id} media={selected} addons={state.addons} mode="banner" />}
       <div className="cinema-hero-copy"><p className="cinema-eyebrow">ASTER SPOTLIGHT <span> / </span> {selected.source}</p>{settings.showLogos && selected.logo ? <img className="cinema-title-logo" src={selected.logo} alt={selected.title} /> : <h1>{selected.title}</h1>}<p className="cinema-meta">{selected.type === 'series' ? 'Series' : 'Movie'} <span>·</span> {selected.genre} {selected.year > 0 && <><span>·</span> {selected.year}</>}{settings.showRatings && selected.rating && <><span>·</span><Star size={14} fill="currentColor" /> {selected.rating}</>}</p><p className="cinema-description">{selected.description}</p><div className="cinema-hero-actions">{selected.type === 'movie' && <button className="primary" onClick={() => play(selected)}><Play size={18} fill="currentColor" />{settings.resume && state.items[selected.id]?.progress && state.items[selected.id].progress!.position / state.items[selected.id].progress!.duration < settings.watchedThreshold / 100 ? 'Resume' : 'Play'}</button>}<button className="primary" onClick={() => selected.demo ? play(selected) : open(selected)}>{selected.demo ? <Play size={18} fill="currentColor" /> : <Info size={18} />}{selected.demo ? 'Watch preview' : 'View details'}</button><button className="cinema-save" onClick={() => library(selected)}>{state.items[selected.id]?.inLibrary ? <Check size={18} /> : <Bookmark size={18} />}{state.items[selected.id]?.inLibrary ? 'In your library' : 'My library'}</button></div></div>
       <div className="cinema-pagination" aria-label="Featured titles">{featured.map((m, i) => <button key={m.id} aria-label={`Feature ${m.title}`} aria-pressed={slide % featured.length === i} onClick={() => setSlide(i)} />)}</div>
     </section> : <section className="cinema-hero cinema-welcome"><div className="cinema-hero-copy"><p className="cinema-eyebrow">WELCOME TO ASTER</p><h1>Your next story starts here.</h1><p className="cinema-description">Your installed catalogs will appear here. Add a catalog to discover movies and series, and a stream provider to watch them.</p><button className="primary" onClick={addons}>Manage addons<ChevronRight size={18} /></button></div></section>)}

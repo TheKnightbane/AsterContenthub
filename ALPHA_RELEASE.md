@@ -1,20 +1,18 @@
-# Aster Content Hub 0.1.0-alpha.6
+# Aster Content Hub 0.1.0-alpha.7
 
-Windows alpha fix: hover trailers now work on smaller and compact cards.
+Windows alpha update: automatic Home banner trailers and more reliable card previews.
 
-- Fixed a size check that silently skipped YouTube trailers on cards under 200 pixels tall. Small cards now expand a properly sized hover preview, including in scaled Windows layouts.
-- Fixed collection updates discarding an active hover preview.
-- Catalog rows now fill wide/fullscreen windows without the unused strip on the right. Horizontal scrolling can reach every card.
-- Hover over a movie or series card to start a muted trailer after a short pause, on Home, Search and your collections.
-- Uses trailer metadata from your installed addons, including Cinemeta. No extra API key is needed.
-- Previews stop when you leave, scroll, open a title or start playback. Reduced motion disables them; you can also switch them off in Settings → Home & display.
-- Titles without a supported, available trailer keep their artwork. YouTube availability and embed restrictions still apply.
-- Includes the existing first-launch setup, bundled mpv, episode controls, profile sync and signed automatic updates.
-- Shared Trakt app registration remains an owner follow-up.
+- Home suggestions rotate every eight seconds, pausing while the pointer or keyboard focus is on the banner.
+- Featured Home titles automatically play a muted trailer after a short pause, keeping the title and Play button accessible.
+- Banner previews yield while you browse cards and stop during movie playback, dialogs or navigation away from Home.
+- Card previews recover when scrolling settles, instead of remaining cancelled until you leave the card.
+- Removed/blocked trailers try the next provider video; loading and unavailable messages make preview status clear.
+- Separate banner autoplay and card-hover switches in Settings → Home & display; reduced motion disables automatic previews.
+- Includes compact-card preview sizing, fullscreen layout fixes, bundled mpv and signed updates.
 
 ## Download
 
-Use **AsterContentHub-Setup-0.1.0-alpha.6-x64.exe**. Alpha 3–5 installations can receive this through automatic updates. Alpha 1/2 users need to install a current setup build once to enable the updater. Close earlier Aster windows before a manual installation. Windows x64 and WebView2 are required; mpv is included.
+Use **AsterContentHub-Setup-0.1.0-alpha.7-x64.exe**. Alpha 3–6 installations can receive this through automatic updates. Alpha 1/2 users need to install a current setup build once to enable the updater. Windows x64 and WebView2 are required; mpv is included. Saved libraries and settings are preserved.
 
 The installer is unsigned for Windows publisher/SmartScreen checks. Tauri update signatures verify installer authenticity and release version separately.
 
