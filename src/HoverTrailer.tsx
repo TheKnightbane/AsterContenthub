@@ -5,7 +5,7 @@ import { loadTrailers, type Trailer } from './trailers';
 import YouTubePreview from './YouTubePreview';
 
 /** Shared preview player; card hover and the Home banner use the same lifecycle. */
-export default function HoverTrailer({ media, addons, mode = 'hover' }: { media: Media; addons: InstalledAddon[]; mode?: 'hover' | 'banner' }) {
+export default function HoverTrailer({ media, addons, mode = 'hover', onPlayingChange }: { media: Media; addons: InstalledAddon[]; mode?: 'hover' | 'banner'; onPlayingChange?: (playing: boolean) => void }) {
   const host = useRef<HTMLSpanElement>(null);
   const [eligible, setEligible] = useState(false);
   const [trailers, setTrailers] = useState<Trailer[]>();
@@ -13,6 +13,8 @@ export default function HoverTrailer({ media, addons, mode = 'hover' }: { media:
   const [playing, setPlaying] = useState(false);
   const [floating, setFloating] = useState<{ left: number; top: number; width: number; height: number }>();
   const [started, setStarted] = useState(false);
+  const notify = useRef(onPlayingChange); notify.current = onPlayingChange;
+  useEffect(() => { notify.current?.(playing && eligible && started); return () => notify.current?.(false); }, [playing, eligible, started]);
   const trailer = trailers?.[index];
   const currentAttempt = useRef(index); currentAttempt.current = index;
   const failed = () => { if (currentAttempt.current !== index) return; currentAttempt.current = index + 1; setPlaying(false); setIndex(index + 1); };
@@ -55,7 +57,7 @@ export default function HoverTrailer({ media, addons, mode = 'hover' }: { media:
         setFloating({ width, height, left: Math.max(8, Math.min(innerWidth - width - 8, rect.left + (rect.width - width) / 2)), top: Math.max(8, Math.min(innerHeight - height - 8, rect.top + (rect.height - height) / 2)) });
       } else setFloating(undefined);
       setTrailers(next);
-    }, mode === 'banner' ? 1800 : 900);
+    }, mode === 'banner' ? 0 : 900);
     return () => { alive = false; clearTimeout(timer); };
   }, [eligible, addons, media, mode]);
 

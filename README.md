@@ -1,12 +1,12 @@
 # Aster Content Hub — Windows alpha
 
-A desktop content hub built with Tauri, React, TypeScript and Vite. **0.1.0-alpha.8** is an early testing release.
+A desktop content hub built with Tauri, React, TypeScript and Vite. **0.1.0-alpha.9** is an early testing release.
 
-[Download the Windows alpha](https://github.com/TheKnightbane/AsterContenthub/releases/tag/v0.1.0-alpha.8) · [Report an issue](https://github.com/TheKnightbane/AsterContenthub/issues)
+[Download the Windows alpha](https://github.com/TheKnightbane/AsterContenthub/releases/tag/v0.1.0-alpha.9) · [Report an issue](https://github.com/TheKnightbane/AsterContenthub/issues)
 
 ## Install and preview
 
-Download **AsterContentHub-Setup-0.1.0-alpha.8-x64.exe** from the release page. Windows x64 and Microsoft WebView2 are required. The installer can install WebView2 when needed. This is an unsigned development build; Windows may display an unknown-publisher warning.
+Download **AsterContentHub-Setup-0.1.0-alpha.9-x64.exe** from the release page. Windows x64 and Microsoft WebView2 are required. The installer can install WebView2 when needed. This is an unsigned development build; Windows may display an unknown-publisher warning.
 
 No account, email, API key or Supabase credentials are required to open the app. Your existing Aster library and device credentials are preserved. Automatic updates are included. Alpha 1/2 users need to install this version once; later signed releases download automatically. Updates install after a minute of inactivity, with a Later option. Playback, open dialogs and editing postpone installation. Settings → About includes Check for updates and an Automatic updates switch. Portable/development previews use manual installation.
 
@@ -114,7 +114,7 @@ The Windows package includes the unmodified official mpv 0.42.0 x64 player and V
 
 Release builds use Tauri updater signatures, which are separate from Windows Authenticode publisher certificates. The initial Windows installer is still unsigned for SmartScreen. The public verification key is bundled with Aster. The encrypted private key is kept outside this repository and in GitHub Actions secrets; never commit it or replace it casually. Keep a secure offline backup because existing installations trust this key.
 
-Bump `package.json`, `package-lock.json`, `src-tauri/Cargo.toml`, `src-tauri/tauri.conf.json`, the About version and release notes together. Commit, then push a matching tag, for example `git tag v0.1.0-alpha.8` followed by `git push origin main v0.1.0-alpha.8`. The **Publish signed Windows update** workflow tests, builds and signs the installer, publishes the versioned release and advances `updater/latest.json`. It also supports Run workflow on GitHub. An ordinary source commit or unsigned uploaded EXE does not become an update. Older release jobs cannot roll the update feed backwards.
+Bump `package.json`, `package-lock.json`, `src-tauri/Cargo.toml`, `src-tauri/tauri.conf.json`, the About version and release notes together. Commit, then push a matching tag, for example `git tag v0.1.0-alpha.9` followed by `git push origin main v0.1.0-alpha.9`. The **Publish signed Windows update** workflow tests, builds and signs the installer, publishes the versioned release and advances `updater/latest.json`. It also supports Run workflow on GitHub. An ordinary source commit or unsigned uploaded EXE does not become an update. Older release jobs cannot roll the update feed backwards.
 
 Required Actions secrets: `TAURI_SIGNING_PRIVATE_KEY` and `TAURI_SIGNING_PRIVATE_KEY_PASSWORD`. Public backend config uses the repository variables documented above. `Windows alpha checks` deliberately builds without release-signing secrets, including for pull requests.
 
@@ -128,6 +128,8 @@ Hover over a movie or series card for a moment to play a muted trailer. Your ins
 
 To verify real YouTube playback in the packaged Windows WebView, build the desktop app and run `node scripts/check-native-trailers.mjs`. This opt-in check requires internet, opens an isolated diagnostic copy, uses a fresh test profile/WebView folder, checks scaled and large cards, then closes its own process. It does not use your library.
 
-The Home spotlight rotates suggestions every eight seconds and automatically starts available muted trailers. Rotation pauses while you hover over or focus the banner. Banner autoplay, rotation and card hover previews each have their own switch in Settings → Home & display. Reduced motion disables automatic playback and rotation. Scrolling temporarily suspends previews; they recover when scrolling settles. Unavailable trailer videos fall back to other provider trailers.
+The Home spotlight rotates suggestions every eight seconds and automatically starts available muted trailers. Rotation continues while the pointer or a clicked control stays in the banner. Banner autoplay, rotation and card hover previews each have their own switch in Settings → Home & display. Reduced motion disables automatic playback and rotation. Scrolling temporarily suspends previews; they recover when scrolling settles. Unavailable trailer videos fall back to other provider trailers.
 
 YouTube previews use the supported iframe player API, wait for readiness, and check playback progress. Clips loop while hovered instead of stopping permanently after 45 seconds. To repeat real Windows preview starts and check the loop boundary, set `ASTER_TRAILER_SOAK=1` before running `node scripts/check-native-trailers.mjs`.
+
+The banner cycles through the full loaded movie pool instead of stopping at six titles. A position counter and next/previous controls keep the larger list manageable. Banner playback starts without the previous intentional delay; trailer metadata for the next two titles is prefetched.

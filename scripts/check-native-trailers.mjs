@@ -31,6 +31,11 @@ try {
     localStorage.setItem(`aster.state.v1:profile:${id}`,JSON.stringify({version:1,seeded:true,items:{[testId]:{media:{id:testId,type:'movie',title:testTitle,year:2001,genre:'Fantasy',duration:'Movie',description:'Trailer test',art:'/art/forest.jpg',accent:'#18232d',source:'Cinemeta'},inLibrary:true,favorite:false,updatedAt:new Date().toISOString()}},addons:[{url:'https://v3-cinemeta.strem.io/manifest.json',manifest:{id:'cinemeta',name:'Cinemeta',version:'1',description:'Metadata',resources:['meta'],types:['movie','series'],catalogs:[]}}]}));
   },{testId:process.env.ASTER_TRAILER_TEST_ID||'tt0241527',testTitle:process.env.ASTER_TRAILER_TEST_TITLE||'Harry Potter'});
   await page.reload();
+  await page.locator('.cinema-shelf-heading').hover();
+  await page.evaluate(()=>{const card=document.querySelector('.landscape-card');card.dispatchEvent(new PointerEvent('pointerover',{bubbles:true,pointerType:'mouse',relatedTarget:document.body}));card.dispatchEvent(new PointerEvent('pointerout',{bubbles:true,pointerType:'mouse',relatedTarget:document.body}));});
+  await page.waitForTimeout(150);
+  assert.equal(await page.locator('.landscape-card .hover-trailer').count(),0,'Rapid pointer exit must clear queued preview state.');
+  console.log('Packaged WebView: rapid hover race cleared correctly.');
   for(const [iteration,width] of [1152,1920,1152,1920].entries()){
     await page.setViewportSize({width,height:900});
     await page.locator('.cinema-shelf-heading').hover();
@@ -53,12 +58,16 @@ try {
     await page.locator('.cinema-shelf-heading').hover();
     await page.locator('iframe').waitFor({state:'detached'});
   }
-  await page.evaluate(() => { const key='aster.settings.v1:profile:22222222-2222-4222-8222-222222222222'; const value=JSON.parse(localStorage.getItem(key)); localStorage.setItem(key,JSON.stringify({...value,showSpotlight:true})); });
+  await page.evaluate(() => { const key='aster.settings.v1:profile:22222222-2222-4222-8222-222222222222'; const value=JSON.parse(localStorage.getItem(key)); localStorage.setItem(key,JSON.stringify({...value,showSpotlight:true})); const stateKey='aster.state.v1:profile:22222222-2222-4222-8222-222222222222'; const state=JSON.parse(localStorage.getItem(stateKey)); const base=Object.values(state.items)[0]; const secondId=base.media.id==='tt0241527'?'tt33764258':'tt0241527'; state.items[secondId]={...base,media:{...base.media,id:secondId,title:secondId==='tt0241527'?'Harry Potter':'The Odyssey'}}; localStorage.setItem(stateKey,JSON.stringify(state)); });
   await page.reload();
   await page.locator('.cinema-hero .banner-trailer.is-playing').waitFor({state:'visible',timeout:35000});
   const bannerFrame=page.frames().find(f=>f.url().startsWith('https://www.youtube-nocookie.com/embed/'));
   await bannerFrame.waitForFunction(()=>{const v=document.querySelector('video');return v&&!v.paused&&v.currentTime>1;},null,{timeout:15000});
   assert(await bannerFrame.locator('video').evaluate(v=>v.muted));
+  await page.locator('.cinema-hero-copy').hover();
+  const featured=await page.locator('.cinema-pagination button[aria-pressed=true]').getAttribute('aria-label');
+  await page.waitForFunction(before=>document.querySelector('.cinema-pagination button[aria-pressed=true]')?.getAttribute('aria-label')!==before,featured,{timeout:11000});
+  console.log('Packaged WebView: eight-second banner rotation continues with pointer over banner.');
   await page.getByRole('button',{name:'View details',exact:true}).click();
   await page.locator('.banner-trailer iframe').waitFor({state:'detached'});
   console.log('Packaged WebView: banner autoplays muted without hover; opening details stops it.');

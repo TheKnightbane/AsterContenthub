@@ -22,6 +22,10 @@ test('cinematic home groups addon catalogs, changes spotlight, and scrolls lands
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   await page.getByRole('button', { name: 'Search', exact: true }).click();
   await expect(page.getByRole('textbox', { name: 'Search content' })).toBeVisible();
+  await page.evaluate(() => window.scrollTo(0, 500));
+  await page.locator('.sidebar').getByRole('button', { name: 'Home', exact: true }).click();
+  await expect.poll(() => page.evaluate(() => scrollY)).toBe(0);
+  await expect(page.getByRole('region', { name: 'Featured stories' })).toBeVisible();
 });
 
 test('starts empty and removes retired demo records while retaining addon content', async ({ page }) => {

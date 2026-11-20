@@ -40,7 +40,7 @@ const genres = ['All stories', 'Fantasy', 'Adventure', 'Sci-Fi', 'Animation'];
 function MediaCard({ media, compact = false, state, settings, open, favorite }: { media: Media; compact?: boolean; state: LocalState; settings: AppSettings; open: (media: Media) => void; favorite: (media: Media) => void }) {
   const [hovered, setHovered] = useState(false);
   const item = state.items[media.id];
-  return <article className={`card ${compact ? 'continue-card' : ''}`} onPointerEnter={e => { if (e.pointerType === 'mouse' && settings.hoverTrailers && !settings.reducedMotion && !matchMedia('(prefers-reduced-motion: reduce)').matches) setHovered(true); }} onPointerLeave={() => setHovered(false)}>
+  return <article className={`card ${compact ? 'continue-card' : ''}`} onPointerMove={e => { if (e.pointerType !== 'touch' && settings.hoverTrailers && !settings.reducedMotion) setHovered(true); }} onPointerEnter={e => { if (e.pointerType === 'mouse' && settings.hoverTrailers && !settings.reducedMotion && !matchMedia('(prefers-reduced-motion: reduce)').matches) setHovered(true); }} onPointerLeave={() => setHovered(false)}>
     <button className="card-art" style={{ backgroundImage: `linear-gradient(180deg, transparent 20%, #0009 100%), url("${media.art.replace(/["\\\n\r]/g, '')}")`, backgroundColor: media.accent }} onClick={() => open(media)} aria-label={`View ${media.title}`}>
       {hovered && settings.hoverTrailers && !settings.reducedMotion && <HoverTrailer media={media} addons={state.addons} />}
       <span className="card-tag">{compact ? 'PICK UP WHERE YOU LEFT OFF' : media.genre}</span>
@@ -185,7 +185,7 @@ export default function App({ profile, switchProfile }: { profile: LocalProfile;
     if (!stream.url) return; setDebridBusy(true);
     try { const resolved = await unrestrictLink(stream.url); play(media, resolved.download); } catch (error) { setStreamError(error instanceof Error ? error.message : String(error)); } finally { setDebridBusy(false); }
   };
-  const go = (name: Page) => { setPage(name); setGenre('All stories'); setQuery(''); };
+  const go = (name: Page) => { setPage(name); setGenre('All stories'); setQuery(''); if (name === 'Home') window.scrollTo({ top: 0, behavior: 'instant' }); };
   const allMedia = [...new Map([...addonMedia, ...Object.values(state.items).map(i => i.media), ...remoteItems].map(m => [m.id, m])).values()];
   const progressItems = Object.values(state.items).filter(i => i.progress && i.progress.position > 0 && i.progress.position / i.progress.duration < settings.watchedThreshold / 100);
   const visible = allMedia.filter(m => {

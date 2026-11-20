@@ -106,3 +106,6 @@
 .banner-trailer .trailer-picture video{object-fit:cover}
 @media(prefers-reduced-motion:reduce){.trailer-picture{transition:none}}
 .trailer-youtube{position:absolute;inset:0;display:block}
+.cinema-pagination{align-items:center}
+.cinema-pagination .carousel-arrow{display:grid;place-items:center;width:28px;height:28px;border:1px solid #ffffff25;background:#0b101b88;color:#eef3ef}
+.carousel-count{font-size:10px;color:#c7d1cc;min-width:52px;font-variant-numeric:tabular-nums;text-align:center}
